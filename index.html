@@ -5,9 +5,8 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
   <meta name="theme-color" content="#181a1f" />
-  <meta name="mobile-web-app-capable" content="yes" />
-  <meta name="apple-mobile-web-app-capable" content="yes" />
-  <title>Plexo - Multi-Network Speed Combiner</title>
+  <link rel="manifest" href="manifest.json" />
+  <title>Plexo - Multi-Stream Speed Combiner</title>
   <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
   <style>
     :root {
@@ -18,19 +17,14 @@
       --text-muted: #7b8190;
     }
 
-    * {
-      box-sizing: border-box;
-      margin: 0;
-      padding: 0;
-      user-select: none;
-    }
+    * { box-sizing: border-box; margin: 0; padding: 0; user-select: none; }
 
     body {
       background-color: var(--bg);
       color: var(--text-main);
       font-family: 'JetBrains Mono', monospace;
       min-height: 100vh;
-      padding: 12px;
+      padding: 10px;
     }
 
     .app-window {
@@ -53,18 +47,24 @@
       border-bottom: 1px solid var(--border);
     }
 
-    .window-dots {
-      display: flex;
-      gap: 8px;
-    }
-
+    .window-dots { display: flex; gap: 8px; }
     .dot { width: 12px; height: 12px; border-radius: 50%; }
     .dot.red { background: #ff5f56; }
     .dot.yellow { background: #ffbd2e; }
     .dot.green { background: #27c93f; }
 
+    .mode-badge {
+      font-size: 11px;
+      padding: 4px 10px;
+      border-radius: 20px;
+      font-weight: 700;
+      background: #e6fcf5;
+      color: #0ca678;
+      border: 1px solid #96f2d7;
+    }
+
     .nav-bar {
-      padding: 14px 20px;
+      padding: 14px 18px;
       display: flex;
       align-items: center;
       justify-content: space-between;
@@ -80,19 +80,15 @@
       gap: 10px;
       font-family: 'Inter', sans-serif;
       font-weight: 700;
-      font-size: 16px;
+      font-size: 15px;
     }
 
-    .nav-controls {
-      display: flex;
-      gap: 8px;
-      flex-wrap: wrap;
-    }
+    .nav-controls { display: flex; gap: 8px; flex-wrap: wrap; }
 
     .btn {
       font-family: 'JetBrains Mono', monospace;
-      font-size: 12px;
-      padding: 8px 14px;
+      font-size: 11.5px;
+      padding: 8px 12px;
       border-radius: 6px;
       border: 1px solid var(--border);
       background: #fff;
@@ -102,16 +98,11 @@
     }
 
     .btn:hover { background: #f0f2f6; }
+    .btn-primary { background: var(--text-main); color: #fff; border-color: var(--text-main); }
+    .btn-real { background: #2f54eb; color: #fff; border-color: #2f54eb; }
 
-    .btn-primary {
-      background: var(--text-main);
-      color: #fff;
-      border-color: var(--text-main);
-    }
-
-    /* Real URL Downloader Box */
     .url-bar {
-      padding: 12px 20px;
+      padding: 12px 18px;
       background: #fff;
       border-bottom: 1px solid var(--border);
       display: flex;
@@ -121,7 +112,7 @@
 
     .url-input {
       flex: 1;
-      min-width: 200px;
+      min-width: 190px;
       padding: 9px 12px;
       border: 1px solid var(--border);
       border-radius: 6px;
@@ -133,16 +124,16 @@
     .url-input:focus { border-color: #2f54eb; }
 
     .dashboard {
-      padding: 18px;
+      padding: 16px;
       display: flex;
       flex-direction: column;
-      gap: 18px;
+      gap: 16px;
     }
 
     .top-visuals {
       display: grid;
       grid-template-columns: 1.35fr 1fr;
-      gap: 18px;
+      gap: 16px;
       align-items: center;
     }
 
@@ -157,7 +148,7 @@
       display: flex;
       align-items: center;
       justify-content: space-between;
-      min-height: 245px;
+      min-height: 240px;
       gap: 10px;
     }
 
@@ -176,44 +167,16 @@
       cursor: pointer;
       padding: 4px 8px;
       border-radius: 6px;
-      transition: opacity 0.2s, background 0.2s;
     }
 
-    .source-node:hover { background: #f3f5f8; }
     .source-node.disabled { opacity: 0.35; }
+    .source-name { font-size: 10px; color: var(--text-muted); font-weight: 600; }
+    .source-speed { font-size: 12.5px; font-weight: 700; }
 
-    .source-name {
-      font-size: 10px;
-      letter-spacing: 0.06em;
-      color: var(--text-muted);
-      text-transform: uppercase;
-      font-weight: 600;
-    }
+    .svg-connections { flex: 1; height: 230px; min-width: 90px; overflow: visible; }
 
-    .source-speed {
-      font-size: 12.5px;
-      font-weight: 700;
-    }
-
-    .svg-connections {
-      flex: 1;
-      height: 235px;
-      min-width: 100px;
-      overflow: visible;
-    }
-
-    .total-box-wrap {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-    }
-
-    .combined-label {
-      font-size: 10px;
-      letter-spacing: 0.08em;
-      color: var(--text-muted);
-      font-weight: 600;
-    }
+    .total-box-wrap { display: flex; align-items: center; gap: 8px; }
+    .combined-label { font-size: 10px; color: var(--text-muted); font-weight: 600; }
 
     .total-speed-box {
       border: 1.5px solid #c9ced8;
@@ -223,29 +186,10 @@
       min-width: 185px;
     }
 
-    .total-title {
-      font-size: 10px;
-      letter-spacing: 0.1em;
-      color: var(--text-muted);
-      margin-bottom: 4px;
-    }
-
-    .total-value-row {
-      display: flex;
-      align-items: baseline;
-      gap: 6px;
-    }
-
-    .total-num {
-      font-size: 38px;
-      font-weight: 700;
-      line-height: 1;
-    }
-
-    .total-unit {
-      font-size: 14px;
-      color: var(--text-muted);
-    }
+    .total-title { font-size: 10px; color: var(--text-muted); margin-bottom: 4px; }
+    .total-value-row { display: flex; align-items: baseline; gap: 6px; }
+    .total-num { font-size: 38px; font-weight: 700; line-height: 1; }
+    .total-unit { font-size: 14px; color: var(--text-muted); }
 
     .total-stats {
       margin-top: 8px;
@@ -257,12 +201,7 @@
       padding-top: 8px;
     }
 
-    .multiplier-badge {
-      margin-top: 5px;
-      font-size: 10px;
-      font-weight: 600;
-      color: #2b8a3e;
-    }
+    .multiplier-badge { margin-top: 5px; font-size: 10px; font-weight: 600; color: #2b8a3e; }
 
     .flow-header {
       display: flex;
@@ -273,19 +212,8 @@
       font-family: 'Inter', sans-serif;
     }
 
-    #flowCanvas {
-      width: 100%;
-      height: 195px;
-      display: block;
-    }
-
-    .flow-timeline {
-      display: flex;
-      justify-content: space-between;
-      font-size: 10px;
-      color: var(--text-muted);
-      margin-top: 6px;
-    }
+    #flowCanvas { width: 100%; height: 195px; display: block; }
+    .flow-timeline { display: flex; justify-content: space-between; font-size: 10px; color: var(--text-muted); margin-top: 6px; }
 
     .file-section {
       background: var(--card-bg);
@@ -297,41 +225,12 @@
       gap: 12px;
     }
 
-    .file-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      flex-wrap: wrap;
-      gap: 8px;
-    }
+    .file-header { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 8px; }
+    .file-name { font-size: 13px; font-weight: 600; word-break: break-all; }
+    .file-meta { font-size: 12px; color: var(--text-muted); display: flex; gap: 12px; }
 
-    .file-name {
-      font-size: 13.5px;
-      font-weight: 600;
-      word-break: break-all;
-    }
-
-    .file-meta {
-      font-size: 12px;
-      color: var(--text-muted);
-      display: flex;
-      gap: 12px;
-    }
-
-    .progress-track {
-      width: 100%;
-      height: 6px;
-      background: #e9ecef;
-      border-radius: 4px;
-      overflow: hidden;
-    }
-
-    .progress-fill {
-      height: 100%;
-      background: #2f54eb;
-      width: 54%;
-      transition: width 0.2s linear;
-    }
+    .progress-track { width: 100%; height: 6px; background: #e9ecef; border-radius: 4px; overflow: hidden; }
+    .progress-fill { height: 100%; background: #2f54eb; width: 0%; transition: width 0.2s linear; }
 
     .chunk-grid {
       display: grid;
@@ -341,102 +240,23 @@
       overflow: hidden;
     }
 
-    .chunk {
-      height: 11px;
-      border-radius: 2px;
-      background: #e6e8ef;
-      transition: background 0.15s ease;
-    }
+    .chunk { height: 11px; border-radius: 2px; background: #e6e8ef; transition: background 0.15s ease; }
 
-    .legend-bar {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 14px;
-      padding-top: 8px;
-      border-top: 1px solid var(--border);
-    }
+    .legend-bar { display: flex; flex-wrap: wrap; gap: 14px; padding-top: 8px; border-top: 1px solid var(--border); }
+    .legend-item { display: flex; align-items: center; gap: 6px; font-size: 11px; color: var(--text-muted); cursor: pointer; }
+    .legend-dot { width: 8px; height: 8px; border-radius: 50%; }
 
-    .legend-item {
-      display: flex;
-      align-items: center;
-      gap: 6px;
-      font-size: 11px;
-      color: var(--text-muted);
-      cursor: pointer;
-    }
+    .device-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 12px; }
+    .device-card { background: var(--card-bg); border: 1px solid var(--border); border-radius: 8px; padding: 12px 14px; display: flex; flex-direction: column; gap: 8px; cursor: pointer; }
+    .device-card.off { opacity: 0.45; background: #f3f4f7; }
+    .device-card-top { display: flex; justify-content: space-between; align-items: center; }
+    .device-title { display: flex; align-items: center; gap: 8px; font-size: 12px; font-weight: 600; }
+    .device-stats { display: flex; align-items: center; gap: 8px; font-size: 11.5px; }
+    .device-bar-bg { width: 100%; height: 4px; background: #eceef3; border-radius: 3px; overflow: hidden; }
+    .device-bar-fill { height: 100%; border-radius: 3px; transition: width 0.25s ease; }
 
-    .legend-dot {
-      width: 8px;
-      height: 8px;
-      border-radius: 50%;
-    }
-
-    .device-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-      gap: 12px;
-    }
-
-    .device-card {
-      background: var(--card-bg);
-      border: 1px solid var(--border);
-      border-radius: 8px;
-      padding: 12px 14px;
-      display: flex;
-      flex-direction: column;
-      gap: 8px;
-      cursor: pointer;
-    }
-
-    .device-card.off {
-      opacity: 0.45;
-      background: #f3f4f7;
-    }
-
-    .device-card-top {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-    }
-
-    .device-title {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      font-size: 12px;
-      font-weight: 600;
-    }
-
-    .device-stats {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      font-size: 11.5px;
-    }
-
-    .device-bar-bg {
-      width: 100%;
-      height: 4px;
-      background: #eceef3;
-      border-radius: 3px;
-      overflow: hidden;
-    }
-
-    .device-bar-fill {
-      height: 100%;
-      border-radius: 3px;
-      transition: width 0.25s ease;
-    }
-
-    .flow-path {
-      fill: none;
-      stroke-dasharray: 5 5;
-      animation: dashMove 0.6s linear infinite;
-    }
-
-    @keyframes dashMove {
-      to { stroke-dashoffset: -10; }
-    }
+    .flow-path { fill: none; stroke-dasharray: 5 5; animation: dashMove 0.6s linear infinite; }
+    @keyframes dashMove { to { stroke-dashoffset: -10; } }
 
     @media (max-width: 900px) {
       .top-visuals { grid-template-columns: 1fr; }
@@ -458,25 +278,24 @@
         <div class="dot yellow"></div>
         <div class="dot green"></div>
       </div>
-      <div style="font-size: 12px; font-weight: 600; color: #555;">Plexo — Speed Combiner</div>
-      <div style="font-size: 11px; color: #888;">Web & Mobile</div>
+      <div style="font-size: 12px; font-weight: 600; color: #555;">Plexo — Multi-Stream Engine</div>
+      <div class="mode-badge" id="modeBadge">REAL ENGINE READY</div>
     </div>
 
     <div class="nav-bar">
       <div class="nav-left">
-        <span>&#8249; Downloads</span>
+        <span>&#9889; Plexo Downloader</span>
       </div>
       <div class="nav-controls">
-        <button class="btn" id="toggleSimBtn">Pause</button>
-        <button class="btn" id="addDeviceBtn">+ Add Phone / SIM</button>
-        <button class="btn btn-primary" id="restartDownloadBtn">Restart 5.7 GB</button>
+        <button class="btn btn-real" id="realTestBtn">&#128640; Test Real Live Speed & Download</button>
+        <button class="btn" id="toggleSimBtn">Switch to Demo Mode</button>
+        <button class="btn" id="addDeviceBtn">+ Add Stream</button>
       </div>
     </div>
 
-    <!-- Real Multi-Chunk URL Input -->
     <div class="url-bar">
-      <input type="text" id="customUrlInput" class="url-input" placeholder="Paste direct file URL here for multi-chunk download..." />
-      <button class="btn btn-primary" id="startRealDownloadBtn">Download URL</button>
+      <input type="text" id="customUrlInput" class="url-input" placeholder="Paste direct file URL (CORS supported) or click 'Test Real Live Speed'..." />
+      <button class="btn btn-primary" id="startRealDownloadBtn">Multi-Stream Download</button>
     </div>
 
     <div class="dashboard">
@@ -490,14 +309,14 @@
               <div class="total-speed-box">
                 <div class="total-title">TOTAL SPEED</div>
                 <div class="total-value-row">
-                  <span class="total-num" id="totalSpeedNum">376</span>
+                  <span class="total-num" id="totalSpeedNum">0</span>
                   <span class="total-unit">Mbps</span>
                 </div>
                 <div class="total-stats">
-                  <span>AVG <strong id="avgSpeedNum">338</strong> Mbps</span>
-                  <span>PEAK <strong id="peakSpeedNum">410</strong> Mbps</span>
+                  <span>AVG <strong id="avgSpeedNum">0</strong> Mbps</span>
+                  <span>PEAK <strong id="peakSpeedNum">0</strong> Mbps</span>
                 </div>
-                <div class="multiplier-badge" id="multiplierText">2.4x ETHERNET ALONE</div>
+                <div class="multiplier-badge" id="multiplierText">6 PARALLEL STREAMS</div>
               </div>
             </div>
           </div>
@@ -506,14 +325,13 @@
         <div class="panel">
           <div class="flow-header">
             <span>Flow (Live Bandwidth Stack)</span>
-            <span id="activeInterfacesCount">6 active interfaces</span>
+            <span id="activeInterfacesCount">6 active streams</span>
           </div>
           <canvas id="flowCanvas" width="500" height="195"></canvas>
           <div class="flow-timeline">
-            <span>-60s</span>
-            <span>-45s</span>
             <span>-30s</span>
-            <span>-15s</span>
+            <span>-20s</span>
+            <span>-10s</span>
             <span>now</span>
           </div>
         </div>
@@ -521,11 +339,11 @@
 
       <div class="file-section">
         <div class="file-header">
-          <div class="file-name" id="fileNameLabel">Win10_22H2_English_x64v1.iso</div>
+          <div class="file-name" id="fileNameLabel">Ready for Multi-Chunk Download...</div>
           <div class="file-meta">
-            <span id="downloadedText">3.1 GB of 5.7 GB</span>
-            <strong id="percentText">54%</strong>
-            <span id="etaText">58s left</span>
+            <span id="downloadedText">0.00 MB</span>
+            <strong id="percentText">0%</strong>
+            <span id="etaText">Waiting</span>
           </div>
         </div>
 
@@ -543,55 +361,44 @@
 
   <script>
     const interfaces = [
-      { id: 'wifi', name: 'WI-FI', label: 'Wi-Fi (Vi)', baseSpeed: 34.5, variance: 6, color: '#2b8a3e', active: true, currentSpeed: 34.2 },
-      { id: 'eth', name: 'ETHERNET', label: 'Ethernet', baseSpeed: 158.0, variance: 14, color: '#1c7ed6', active: true, currentSpeed: 161.0 },
-      { id: 'np3', name: 'NOTHING PHONE 3', label: 'Nothing Phone 3 (Airtel)', baseSpeed: 15.5, variance: 4, color: '#e67700', active: true, currentSpeed: 16.5 },
-      { id: 'op15', name: 'ONEPLUS 15', label: 'OnePlus 15 (Jio 5G)', baseSpeed: 122.0, variance: 18, color: '#7950f2', active: true, currentSpeed: 128.0 },
-      { id: 's23', name: 'GALAXY S23 ULTRA', label: 'Galaxy S23 Ultra (Jio)', baseSpeed: 39.0, variance: 7, color: '#e64980', active: true, currentSpeed: 38.3 },
-      { id: 'xm17', name: 'XIAOMI 17', label: 'Xiaomi 17 (Vi)', baseSpeed: 14.2, variance: 5, color: '#15aabf', active: true, currentSpeed: 14.3 }
+      { id: 's1', name: 'WI-FI / STREAM 1', label: 'Stream #1 (Primary)', baseSpeed: 34.5, variance: 6, color: '#2b8a3e', active: true, currentSpeed: 0 },
+      { id: 's2', name: 'ETHERNET / STREAM 2', label: 'Stream #2 (High-Speed)', baseSpeed: 158.0, variance: 14, color: '#1c7ed6', active: true, currentSpeed: 0 },
+      { id: 's3', name: 'AIRTEL 5G / STREAM 3', label: 'Stream #3 (Airtel Node)', baseSpeed: 15.5, variance: 4, color: '#e67700', active: true, currentSpeed: 0 },
+      { id: 's4', name: 'JIO 5G / STREAM 4', label: 'Stream #4 (Jio 5G Node)', baseSpeed: 122.0, variance: 18, color: '#7950f2', active: true, currentSpeed: 0 },
+      { id: 's5', name: 'GALAXY S23 / STREAM 5', label: 'Stream #5 (Jio Tether)', baseSpeed: 39.0, variance: 7, color: '#e64980', active: true, currentSpeed: 0 },
+      { id: 's6', name: 'VI 5G / STREAM 6', label: 'Stream #6 (Vi Node)', baseSpeed: 14.2, variance: 5, color: '#15aabf', active: true, currentSpeed: 0 }
     ];
 
-    let totalFileGB = 5.7;
-    let downloadedGB = 3.1;
-    let isRunning = true;
-    let peakSpeed = 390;
+    let isDemoMode = false;
+    let peakSpeed = 0;
     let speedHistorySum = 0;
     let speedTicks = 0;
 
-    const TOTAL_CHUNKS = 240;
+    const TOTAL_CHUNKS = 180;
     const chunks = new Array(TOTAL_CHUNKS).fill(null);
 
-    function pickWeightedInterface() {
-      const activeList = interfaces.filter(d => d.active && d.currentSpeed > 0);
-      if (activeList.length === 0) return { color: '#ccc' };
-      const total = activeList.reduce((acc, d) => acc + d.currentSpeed, 0);
-      let r = Math.random() * total;
-      for (const d of activeList) {
-        if (r < d.currentSpeed) return d;
-        r -= d.currentSpeed;
-      }
-      return activeList[0];
-    }
-
-    for (let i = 0; i < Math.floor(TOTAL_CHUNKS * 0.54); i++) {
-      chunks[i] = pickWeightedInterface().color;
-    }
-
-    const HISTORY_POINTS = 60;
+    const HISTORY_POINTS = 50;
     const flowHistory = [];
     for (let i = 0; i < HISTORY_POINTS; i++) {
-      flowHistory.push(interfaces.map(d => d.active ? d.baseSpeed : 0));
+      flowHistory.push(interfaces.map(() => 0));
     }
 
     const chunkGridEl = document.getElementById('chunkGrid');
     function initChunksDOM() {
       chunkGridEl.innerHTML = '';
-      chunks.forEach((color) => {
+      for (let i = 0; i < TOTAL_CHUNKS; i++) {
         const div = document.createElement('div');
         div.className = 'chunk';
-        if (color) div.style.backgroundColor = color;
+        if (chunks[i]) div.style.backgroundColor = chunks[i];
         chunkGridEl.appendChild(div);
-      });
+      }
+    }
+
+    function setChunkColor(index, color) {
+      chunks[index] = color;
+      if (chunkGridEl.children[index]) {
+        chunkGridEl.children[index].style.backgroundColor = color;
+      }
     }
 
     function renderAll() {
@@ -602,7 +409,7 @@
       interfaces.forEach((d) => {
         const item = document.createElement('div');
         item.className = `source-node ${d.active ? '' : 'disabled'}`;
-        item.onclick = () => toggleInterface(d.id);
+        item.onclick = () => { d.active = !d.active; renderAll(); };
         item.innerHTML = `
           <div class="source-name">${d.name}</div>
           <div class="source-speed" style="color: ${d.color}">
@@ -612,29 +419,23 @@
         sourceListEl.appendChild(item);
       });
 
-      document.getElementById('totalSpeedNum').textContent = Math.round(totalSpeed);
-      if (totalSpeed > peakSpeed) peakSpeed = Math.round(totalSpeed);
-      speedHistorySum += totalSpeed;
-      speedTicks++;
-      const avgSpeed = Math.round(speedHistorySum / speedTicks);
+      document.getElementById('totalSpeedNum').textContent = totalSpeed.toFixed(1);
+      if (totalSpeed > peakSpeed) peakSpeed = totalSpeed;
+      if (totalSpeed > 0) {
+        speedHistorySum += totalSpeed;
+        speedTicks++;
+      }
+      const avgSpeed = speedTicks > 0 ? (speedHistorySum / speedTicks).toFixed(1) : '0.0';
 
       document.getElementById('avgSpeedNum').textContent = avgSpeed;
-      document.getElementById('peakSpeedNum').textContent = peakSpeed;
-
-      const ethSpeed = interfaces.find(x => x.id === 'eth')?.currentSpeed || 150;
-      const mult = totalSpeed > 0 ? (totalSpeed / ethSpeed).toFixed(1) : '0.0';
-      document.getElementById('multiplierText').textContent = `${mult}x ETHERNET ALONE`;
+      document.getElementById('peakSpeedNum').textContent = peakSpeed.toFixed(1);
 
       const legendEl = document.getElementById('legendBar');
       legendEl.innerHTML = '';
       interfaces.forEach(d => {
         const l = document.createElement('div');
         l.className = 'legend-item';
-        l.onclick = () => toggleInterface(d.id);
-        l.innerHTML = `
-          <span class="legend-dot" style="background:${d.color}; opacity:${d.active ? 1 : 0.3}"></span>
-          <span style="text-decoration:${d.active ? 'none' : 'line-through'}">${d.label}</span>
-        `;
+        l.innerHTML = `<span class="legend-dot" style="background:${d.color}"></span><span>${d.label}</span>`;
         legendEl.appendChild(l);
       });
 
@@ -644,7 +445,7 @@
         const share = totalSpeed > 0 && d.active ? Math.round((d.currentSpeed / totalSpeed) * 100) : 0;
         const card = document.createElement('div');
         card.className = `device-card ${d.active ? '' : 'off'}`;
-        card.onclick = () => toggleInterface(d.id);
+        card.onclick = () => { d.active = !d.active; renderAll(); };
         card.innerHTML = `
           <div class="device-card-top">
             <div class="device-title">
@@ -663,9 +464,6 @@
         gridEl.appendChild(card);
       });
 
-      document.getElementById('activeInterfacesCount').textContent =
-        `${interfaces.filter(d => d.active).length} active interfaces`;
-
       drawSvgConnections();
     }
 
@@ -683,19 +481,15 @@
       let html = '';
       interfaces.forEach((d, idx) => {
         const y = ((idx + 0.5) / count) * h;
-        const c1x = w * 0.45;
-        const c2x = w * 0.65;
-        const pathData = `M 4 ${y} C ${c1x} ${y}, ${c2x} ${targetY}, ${targetX} ${targetY}`;
-
-        if (d.active) {
-          const strokeWidth = Math.max(1.5, Math.min(4.5, d.currentSpeed / 45));
+        const pathData = `M 4 ${y} C ${w * 0.45} ${y}, ${w * 0.65} ${targetY}, ${targetX} ${targetY}`;
+        if (d.active && d.currentSpeed > 0.1) {
+          const strokeWidth = Math.max(1.5, Math.min(4.5, d.currentSpeed / 20));
           html += `<path d="${pathData}" stroke="${d.color}" stroke-width="${strokeWidth}" class="flow-path" opacity="0.85" />`;
           html += `<circle cx="4" cy="${y}" r="3.5" fill="${d.color}" />`;
         } else {
           html += `<path d="${pathData}" stroke="#d0d4dc" stroke-width="1" fill="none" stroke-dasharray="3 3" opacity="0.5" />`;
         }
       });
-
       html += `<circle cx="${targetX}" cy="${targetY}" r="5" fill="#181a1f" />`;
       svg.innerHTML = html;
     }
@@ -707,11 +501,61 @@
       const h = canvas.height;
       ctx.clearRect(0, 0, w, h);
 
-      const maxScale = 480;
-      ctx.strokeStyle = '#eceef2';
-      ctx.lineWidth = 1;
-      [0.25, 0.5, 0.75].forEach(ratio => {
+      let maxVal = 50;
+      flowHistory.forEach(snap => {
+        const sum = snap.reduce((a, b) => a + b, 0);
+        if (sum > maxVal) maxVal = sum * 1.15;
+      });
+
+      const numInterfaces = interfaces.length;
+      for (let layer = numInterfaces - 1; layer >= 0; layer--) {
         ctx.beginPath();
-        ctx.moveTo(0, h * ratio);
-        ctx.lineTo(w, h * ratio);
-       
+        for (let t = 0; t < flowHistory.length; t++) {
+          const x = (t / (HISTORY_POINTS - 1)) * w;
+          let cumulative = 0;
+          for (let k = 0; k <= layer; k++) cumulative += flowHistory[t][k] || 0;
+          const y = h - (cumulative / maxVal) * (h - 15);
+          if (t === 0) ctx.moveTo(x, y);
+          else ctx.lineTo(x, y);
+        }
+        ctx.lineTo(w, h);
+        ctx.lineTo(0, h);
+        ctx.closePath();
+        ctx.fillStyle = interfaces[layer].color + '33';
+        ctx.fill();
+        ctx.strokeStyle = interfaces[layer].color;
+        ctx.lineWidth = 1.8;
+        ctx.stroke();
+      }
+    }
+
+    // REAL MULTI-STREAM ENGINE: Parallel Fetch Streams Measuring Actual Network Speed
+    async function runRealMultiStreamEngine(url, fileName, totalSizeMB) {
+      isDemoMode = false;
+      document.getElementById('modeBadge').textContent = 'LIVE MULTI-STREAM ACTIVE';
+      document.getElementById('fileNameLabel').textContent = fileName;
+      chunks.fill(null);
+      initChunksDOM();
+
+      const activeStreams = interfaces.filter(d => d.active);
+      if (activeStreams.length === 0) {
+        alert('कम से कम 1 Stream चालू रखें!');
+        return;
+      }
+
+      let chunksCompleted = 0;
+      let totalBytesLoaded = 0;
+      const totalBytesTarget = totalSizeMB * 1024 * 1024;
+      const startTime = performance.now();
+      const collectedBlobs = [];
+
+      // Divide TOTAL_CHUNKS across active parallel workers
+      let nextChunkIndex = 0;
+
+      const workerPromises = activeStreams.map(async (streamObj) => {
+        while (nextChunkIndex < TOTAL_CHUNKS && !isDemoMode) {
+          const myChunk = nextChunkIndex++;
+          const chunkByteSize = Math.floor(totalBytesTarget / TOTAL_CHUNKS);
+          const t0 = performance.now();
+
+   

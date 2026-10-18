@@ -5,113 +5,131 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
   <meta name="theme-color" content="#090d16" />
   <link rel="manifest" href="manifest.json" />
-  <title>HyperFlux Pro — Network Fusion & Download Manager</title>
+  <title>HyperFlux Ultimate Pro — Enterprise Network Fusion & Download Manager</title>
   <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=JetBrains+Mono:wght@400;500;600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
   <script src="https://unpkg.com/peerjs@1.5.4/dist/peerjs.min.js"></script>
   <style>
     :root {
-      --bg-main: #090d16;
-      --bg-surface: #111726;
-      --bg-elevated: #182032;
+      --bg-main: #070a12;
+      --bg-surface: #0e1422;
+      --bg-elevated: #151d30;
       --border: rgba(255, 255, 255, 0.08);
+      --border-focus: #3b82f6;
       --text-primary: #f8fafc;
       --text-secondary: #94a3b8;
       --accent: #3b82f6;
-      --accent-glow: rgba(59, 130, 246, 0.35);
+      --accent-glow: rgba(59, 130, 246, 0.4);
       --success: #10b981;
       --warning: #f59e0b;
       --danger: #ef4444;
     }
+
     body.theme-light {
       --bg-main: #f1f5f9; --bg-surface: #ffffff; --bg-elevated: #f8fafc;
       --border: rgba(15, 23, 42, 0.09); --text-primary: #0f172a; --text-secondary: #64748b;
+      --accent: #2563eb; --accent-glow: rgba(37, 99, 235, 0.25);
     }
-    body.skin-matrix { --bg-main: #040a06; --bg-surface: #09180e; --bg-elevated: #102618; --accent: #00ff66; }
-    body.skin-crimson { --bg-main: #0e0508; --bg-surface: #1c0b11; --bg-elevated: #2b111a; --accent: #ff2a5f; }
+    body.skin-matrix { --bg-main: #040a06; --bg-surface: #09180e; --bg-elevated: #102618; --accent: #00ff66; --accent-glow: rgba(0,255,102,0.35); }
+    body.skin-crimson { --bg-main: #0e0508; --bg-surface: #1c0b11; --bg-elevated: #2b111a; --accent: #ff2a5f; --accent-glow: rgba(255,42,95,0.35); }
+    body.theme-cyber { --bg-main: #030712; --bg-surface: #0b1120; --bg-elevated: #131d31; --accent: #00f0ff; --accent-glow: rgba(0,240,255,0.35); }
 
     * { box-sizing: border-box; margin: 0; padding: 0; user-select: none; -webkit-tap-highlight-color: transparent; }
-    body { background-color: var(--bg-main); color: var(--text-primary); font-family: 'Inter', sans-serif; min-height: 100vh; padding-bottom: 88px; }
-    .container { max-width: 1200px; margin: 0 auto; padding: 14px; }
+    body { background-color: var(--bg-main); color: var(--text-primary); font-family: 'Inter', sans-serif; min-height: 100vh; padding-bottom: 95px; transition: background 0.3s, color 0.3s; }
+    
+    .container { max-width: 1240px; margin: 0 auto; padding: 14px; }
 
-    .toast-box { position: fixed; top: 16px; right: 16px; z-index: 2000; display: flex; flex-direction: column; gap: 8px; max-width: 340px; }
-    .toast { background: var(--bg-elevated); color: var(--text-primary); border: 1px solid var(--border); border-left: 4px solid var(--accent); padding: 12px 16px; border-radius: 10px; font-size: 12.5px; font-weight: 500; box-shadow: 0 10px 25px rgba(0,0,0,0.4); }
+    /* Toast Notification */
+    .toast-box { position: fixed; top: 16px; right: 16px; z-index: 3000; display: flex; flex-direction: column; gap: 8px; max-width: 350px; }
+    .toast { background: var(--bg-elevated); color: var(--text-primary); border: 1px solid var(--border); border-left: 4px solid var(--accent); padding: 12px 18px; border-radius: 12px; font-size: 13px; font-weight: 500; box-shadow: 0 12px 30px rgba(0,0,0,0.5); animation: fadeIn 0.2s ease; }
+    @keyframes fadeIn { from { opacity: 0; transform: translateY(-10px); } to { opacity: 1; transform: translateY(0); } }
 
-    .app-header { display: flex; align-items: center; justify-content: space-between; background: var(--bg-surface); border: 1px solid var(--border); padding: 14px 18px; border-radius: 14px; margin-bottom: 14px; }
+    /* Header */
+    .app-header { display: flex; align-items: center; justify-content: space-between; background: var(--bg-surface); border: 1px solid var(--border); padding: 14px 18px; border-radius: 16px; margin-bottom: 14px; box-shadow: 0 8px 25px rgba(0,0,0,0.2); }
     .brand-group { display: flex; align-items: center; gap: 12px; }
-    .brand-icon { width: 36px; height: 36px; border-radius: 9px; background: var(--accent); display: flex; align-items: center; justify-content: center; color: #fff; }
-    .brand-name { font-family: 'Space Grotesk', sans-serif; font-size: 17px; font-weight: 700; }
-    .status-pill { display: flex; align-items: center; gap: 6px; font-family: 'JetBrains Mono', monospace; font-size: 11px; padding: 6px 12px; border-radius: 20px; background: rgba(16, 185, 129, 0.12); color: var(--success); border: 1px solid rgba(16, 185, 129, 0.25); font-weight: 600; }
-    .status-dot { width: 7px; height: 7px; border-radius: 50%; background: var(--success); }
+    .brand-icon { width: 38px; height: 38px; border-radius: 10px; background: linear-gradient(135deg, var(--accent), var(--success)); display: flex; align-items: center; justify-content: center; color: #fff; box-shadow: 0 0 15px var(--accent-glow); }
+    .brand-name { font-family: 'Space Grotesk', sans-serif; font-size: 18px; font-weight: 700; letter-spacing: 0.03em; }
+    .status-pill { display: flex; align-items: center; gap: 6px; font-family: 'JetBrains Mono', monospace; font-size: 11.5px; padding: 6px 14px; border-radius: 20px; background: rgba(16, 185, 129, 0.12); color: var(--success); border: 1px solid rgba(16, 185, 129, 0.3); font-weight: 600; }
+    .status-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--success); box-shadow: 0 0 8px var(--success); }
 
+    /* Action Bars & Toolbars */
     .quick-top-bar { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 14px; }
-    .task-creator { background: var(--bg-surface); border: 1px solid var(--border); border-radius: 14px; padding: 16px; margin-bottom: 16px; }
+    .task-creator { background: var(--bg-surface); border: 1px solid var(--border); border-radius: 16px; padding: 18px; margin-bottom: 16px; box-shadow: 0 8px 25px rgba(0,0,0,0.2); }
     .url-row { display: flex; gap: 10px; flex-wrap: wrap; }
     .input-wrapper { flex: 1; min-width: 220px; position: relative; display: flex; align-items: center; }
     .url-input { width: 100%; background: var(--bg-elevated); border: 1px solid var(--border); color: var(--text-primary); padding: 12px 38px 12px 14px; border-radius: 10px; font-family: 'JetBrains Mono', monospace; font-size: 12.5px; outline: none; }
-    .clear-input-btn { position: absolute; right: 10px; background: none; border: none; color: var(--text-secondary); cursor: pointer; }
+    .url-input:focus { border-color: var(--accent); box-shadow: 0 0 10px var(--accent-glow); }
+    .clear-input-btn { position: absolute; right: 12px; background: none; border: none; color: var(--text-secondary); cursor: pointer; font-size: 14px; }
 
-    .preset-chips-bar { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; margin-top: 12px; padding-top: 12px; border-top: 1px dashed var(--border); }
-    .chip-btn { background: var(--bg-elevated); color: var(--text-primary); border: 1px solid var(--border); padding: 6px 12px; border-radius: 8px; font-family: 'JetBrains Mono', monospace; font-size: 11px; font-weight: 600; cursor: pointer; }
-    .chip-btn:hover { border-color: var(--accent); color: var(--accent); }
+    .preset-chips-bar { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; margin-top: 14px; padding-top: 14px; border-top: 1px dashed var(--border); }
+    .chip-btn { background: var(--bg-elevated); color: var(--text-primary); border: 1px solid var(--border); padding: 7px 13px; border-radius: 8px; font-family: 'JetBrains Mono', monospace; font-size: 11.5px; font-weight: 600; cursor: pointer; transition: all 0.15s; }
+    .chip-btn:hover { border-color: var(--accent); color: var(--accent); box-shadow: 0 0 10px var(--accent-glow); }
 
     .controls-toolbar { display: flex; align-items: center; justify-content: space-between; margin-top: 14px; padding-top: 14px; border-top: 1px solid var(--border); flex-wrap: wrap; gap: 10px; }
     .btn-group { display: flex; gap: 8px; flex-wrap: wrap; }
-    .btn { display: inline-flex; align-items: center; gap: 7px; padding: 9px 15px; border-radius: 9px; font-size: 12.5px; font-weight: 600; cursor: pointer; border: 1px solid var(--border); background: var(--bg-elevated); color: var(--text-primary); }
-    .btn:hover:not(:disabled) { border-color: var(--accent); }
+    .btn { display: inline-flex; align-items: center; gap: 7px; padding: 9px 16px; border-radius: 10px; font-size: 12.5px; font-weight: 600; cursor: pointer; border: 1px solid var(--border); background: var(--bg-elevated); color: var(--text-primary); transition: all 0.15s; }
+    .btn:hover:not(:disabled) { border-color: var(--accent); box-shadow: 0 0 10px var(--accent-glow); }
     .btn:disabled { opacity: 0.4; cursor: not-allowed; }
-    .btn-primary { background: var(--accent); color: #fff; border-color: var(--accent); }
+    .btn-primary { background: var(--accent); color: #fff; border-color: var(--accent); box-shadow: 0 4px 15px var(--accent-glow); }
     .btn-warning { background: rgba(245, 158, 11, 0.15); color: var(--warning); border-color: rgba(245, 158, 11, 0.35); }
     .btn-danger { background: rgba(239, 68, 68, 0.15); color: var(--danger); border-color: rgba(239, 68, 68, 0.35); }
     .btn-success { background: rgba(16, 185, 129, 0.15); color: var(--success); border-color: rgba(16, 185, 129, 0.35); }
 
+    /* Tabs Layout */
     .tab-section { display: none; flex-direction: column; gap: 16px; }
     .tab-section.active { display: flex; }
 
-    .node-combiner-card, .telemetry-grid, .card { background: var(--bg-surface); border: 1px solid var(--border); border-radius: 14px; padding: 18px; margin-bottom: 16px; }
-    .combiner-stage { display: flex; align-items: center; justify-content: space-between; gap: 10px; min-height: 200px; }
+    /* Video-Style Node Combiner Graph */
+    .node-combiner-card, .telemetry-layout, .card { background: var(--bg-surface); border: 1px solid var(--border); border-radius: 16px; padding: 18px; margin-bottom: 16px; box-shadow: 0 8px 25px rgba(0,0,0,0.2); }
+    .combiner-stage { display: flex; align-items: center; justify-content: space-between; gap: 12px; min-height: 210px; }
     .combiner-sources { display: flex; flex-direction: column; gap: 8px; width: 36%; }
-    .combiner-item { display: flex; justify-content: space-between; align-items: center; padding: 5px 10px; background: var(--bg-elevated); border: 1px solid var(--border); border-radius: 7px; font-family: 'JetBrains Mono', monospace; font-size: 11px; cursor: pointer; }
-    .combiner-item.off { opacity: 0.35; }
-    .combiner-svg { flex: 1; height: 190px; min-width: 90px; overflow: visible; }
-    .combiner-target { border: 1.5px solid var(--accent); background: var(--bg-elevated); border-radius: 12px; padding: 14px 16px; min-width: 165px; text-align: center; }
+    .combiner-item { display: flex; justify-content: space-between; align-items: center; padding: 7px 12px; background: var(--bg-elevated); border: 1px solid var(--border); border-radius: 8px; font-family: 'JetBrains Mono', monospace; font-size: 11.5px; cursor: pointer; transition: all 0.15s; }
+    .combiner-item:hover { border-color: var(--accent); }
+    .combiner-item.off { opacity: 0.35; filter: grayscale(0.8); }
+    .combiner-svg { flex: 1; height: 195px; min-width: 90px; overflow: visible; }
+    .combiner-target { border: 1.5px solid var(--accent); background: var(--bg-elevated); border-radius: 12px; padding: 16px 18px; min-width: 175px; text-align: center; box-shadow: 0 0 20px var(--accent-glow); }
     .anim-dash { fill: none; stroke-dasharray: 6 5; animation: flowDash 0.55s linear infinite; }
     @keyframes flowDash { to { stroke-dashoffset: -11; } }
 
     .telemetry-layout { display: grid; grid-template-columns: 1fr 1.35fr; gap: 16px; }
-    .card-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 14px; font-family: 'JetBrains Mono', monospace; font-size: 11px; color: var(--text-secondary); text-transform: uppercase; }
+    .card-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 14px; font-family: 'JetBrains Mono', monospace; font-size: 11.5px; color: var(--text-secondary); text-transform: uppercase; letter-spacing: 0.05em; }
 
     .gauge-container { display: flex; flex-direction: column; align-items: center; justify-content: center; }
     .gauge-ring { position: relative; width: 190px; height: 190px; display: flex; align-items: center; justify-content: center; }
     .gauge-svg { position: absolute; width: 100%; height: 100%; transform: rotate(-90deg); }
     .gauge-track { fill: none; stroke: var(--bg-elevated); stroke-width: 12; }
-    .gauge-fill { fill: none; stroke: var(--accent); stroke-width: 12; stroke-linecap: round; stroke-dasharray: 534; stroke-dashoffset: 534; transition: stroke-dashoffset 0.3s ease; }
+    .gauge-fill { fill: none; stroke: var(--accent); stroke-width: 12; stroke-linecap: round; stroke-dasharray: 534; stroke-dashoffset: 534; transition: stroke-dashoffset 0.3s ease; filter: drop-shadow(0 0 8px var(--accent)); }
     .gauge-readout { text-align: center; z-index: 2; }
-    .speed-big { font-family: 'Space Grotesk', sans-serif; font-size: 40px; font-weight: 700; line-height: 1; }
-    .metrics-row { display: grid; grid-template-columns: repeat(3, 1fr); width: 100%; margin-top: 16px; padding-top: 12px; border-top: 1px solid var(--border); text-align: center; font-family: 'JetBrains Mono', monospace; font-size: 11px; }
+    .speed-big { font-family: 'Space Grotesk', sans-serif; font-size: 42px; font-weight: 700; line-height: 1; }
+    .metrics-row { display: grid; grid-template-columns: repeat(3, 1fr); width: 100%; margin-top: 16px; padding-top: 12px; border-top: 1px solid var(--border); text-align: center; font-family: 'JetBrains Mono', monospace; font-size: 11px; color: var(--text-secondary); }
 
     #chartCanvas { width: 100%; height: 185px; display: block; }
 
     .job-header { display: flex; justify-content: space-between; align-items: flex-start; gap: 12px; margin-bottom: 10px; flex-wrap: wrap; }
     .job-title { font-family: 'JetBrains Mono', monospace; font-size: 13.5px; font-weight: 600; word-break: break-all; }
     .progress-bar-wrap { width: 100%; height: 8px; background: var(--bg-elevated); border-radius: 4px; overflow: hidden; margin: 10px 0; }
-    .progress-bar-fill { height: 100%; width: 0%; background: var(--accent); transition: width 0.2s linear; }
-    .chunk-map { display: grid; grid-template-columns: repeat(auto-fill, minmax(12px, 1fr)); gap: 3px; margin-top: 10px; }
-    .chunk-block { height: 12px; border-radius: 2px; background: var(--bg-elevated); }
+    .progress-bar-fill { height: 100%; width: 0%; background: linear-gradient(90deg, var(--accent), var(--success)); transition: width 0.2s linear; }
+    .chunk-map { display: grid; grid-template-columns: repeat(auto-fill, minmax(12px, 1fr)); gap: 3px; margin-top: 10px; max-height: 110px; overflow: hidden; }
+    .chunk-block { height: 12px; border-radius: 2px; background: var(--bg-elevated); transition: background 0.15s; }
 
     .interfaces-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 12px; }
     .iface-card { background: var(--bg-surface); border: 1px solid var(--border); border-radius: 12px; padding: 14px; display: flex; flex-direction: column; gap: 8px; }
-    .iface-card.disabled { opacity: 0.45; }
+    .iface-card.disabled { opacity: 0.45; filter: grayscale(0.8); }
     .iface-top { display: flex; justify-content: space-between; align-items: center; }
-    .color-dot { width: 9px; height: 9px; border-radius: 50%; }
-    .toggle-switch { font-family: 'JetBrains Mono', monospace; font-size: 10.5px; padding: 3px 8px; border-radius: 6px; border: 1px solid var(--border); background: var(--bg-elevated); color: var(--text-primary); cursor: pointer; }
+    .color-dot { width: 10px; height: 10px; border-radius: 50%; box-shadow: 0 0 8px currentColor; }
+    .toggle-switch { font-family: 'JetBrains Mono', monospace; font-size: 11px; padding: 4px 10px; border-radius: 6px; border: 1px solid var(--border); background: var(--bg-elevated); color: var(--text-primary); cursor: pointer; }
 
-    .bottom-nav { position: fixed; bottom: 0; left: 0; right: 0; background: var(--bg-surface); border-top: 1px solid var(--border); display: flex; justify-content: space-around; padding: 8px 12px; z-index: 1000; }
-    .nav-btn { background: none; border: none; color: var(--text-secondary); display: flex; flex-direction: column; align-items: center; gap: 4px; font-size: 11px; font-weight: 600; cursor: pointer; padding: 6px 16px; border-radius: 10px; }
-    .nav-btn.active { color: var(--accent); background: rgba(59, 130, 246, 0.1); }
+    /* Bottom Navigation Bar */
+    .bottom-nav { position: fixed; bottom: 0; left: 0; right: 0; background: rgba(14, 20, 34, 0.94); backdrop-filter: blur(20px); border-top: 1px solid var(--border); display: flex; justify-content: space-around; padding: 10px 12px; z-index: 2000; box-shadow: 0 -10px 30px rgba(0,0,0,0.5); }
+    .nav-btn { background: none; border: none; color: var(--text-secondary); display: flex; flex-direction: column; align-items: center; gap: 4px; font-size: 11px; font-weight: 600; cursor: pointer; padding: 6px 16px; border-radius: 10px; transition: all 0.2s; }
+    .nav-btn.active { color: var(--accent); background: rgba(59, 130, 246, 0.15); box-shadow: 0 0 12px var(--accent-glow); }
     .nav-btn svg { width: 20px; height: 20px; stroke: currentColor; stroke-width: 2; fill: none; }
-    .icon-sm { width: 15px; height: 15px; stroke: currentColor; stroke-width: 2.2; fill: none; }
 
-    @media (max-width: 820px) { .telemetry-layout { grid-template-columns: 1fr; } }
+    @media (max-width: 820px) {
+      .telemetry-layout { grid-template-columns: 1fr; }
+      .combiner-stage { flex-direction: column; align-items: stretch; }
+      .combiner-sources { width: 100%; display: grid; grid-template-columns: repeat(2, 1fr); }
+      .combiner-svg { height: 75px; width: 100%; }
+    }
   </style>
 </head>
 <body>
@@ -122,14 +140,14 @@
     <header class="app-header">
       <div class="brand-group">
         <div class="brand-icon">
-          <svg class="icon-sm" style="width:20px;height:20px;" viewBox="0 0 24 24"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg>
+          <svg style="width:20px;height:20px;" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg>
         </div>
         <div>
           <div class="brand-name">HYPERFLUX PRO</div>
-          <div style="font-size:11px; color:var(--text-secondary); font-family:'JetBrains Mono',monospace;">Multi-Interface Download Manager</div>
+          <div style="font-size:11px; color:var(--text-secondary); font-family:'JetBrains Mono',monospace;">Enterprise Network Bonding &amp; Download Manager</div>
         </div>
       </div>
-      <div class="status-pill" id="engineStatusPill">
+      <div class="status-pill">
         <span class="status-dot" id="statusDot"></span>
         <span id="engineStateText">IDLE / READY</span>
       </div>
@@ -140,16 +158,16 @@
       <div class="quick-top-bar">
         <button class="btn btn-primary" id="quickLiveBtn">⚡ Live Multi-Stream Test</button>
         <button class="btn" id="quickDemoBtn">🔥 400+ Mbps Overdrive Demo</button>
-        <button class="btn" id="quickSkinBtn">🎨 Change Skin (Themes)</button>
-        <button class="btn" id="quickAddSimBtn">➕ Add SIM/Phone</button>
-        <button class="btn" id="forceSaveBtn">💾 Save Current File</button>
+        <button class="btn" id="quickSkinBtn">🎨 Change Theme</button>
+        <button class="btn" id="quickAddSimBtn">➕ Add SIM / Phone Node</button>
+        <button class="btn" id="forceSaveBtn">💾 Force Save File</button>
       </div>
 
       <div class="task-creator">
         <div class="url-row">
           <div class="input-wrapper">
-            <input type="text" id="targetUrlInput" class="url-input" placeholder="Paste direct download URL..." />
-            <button class="clear-input-btn" id="clearUrlBtn">✕</button>
+            <input type="text" id="targetUrlInput" class="url-input" placeholder="Paste direct file download URL (HTTP/HTTPS)..." />
+            <button class="clear-input-btn" id="clearUrlBtn" title="Clear">✕</button>
           </div>
           <button class="btn btn-primary" id="startBtn">Start Download</button>
         </div>
@@ -170,7 +188,7 @@
             <button class="btn" id="resetBtn">Reset</button>
           </div>
           <div style="font-size:12px; color:var(--text-secondary); font-family:'JetBrains Mono',monospace;">
-            CHUNKS: <select id="chunkSelect" style="background:var(--bg-elevated); color:var(--text-primary); border:1px solid var(--border); padding:4px 8px; border-radius:6px;"><option value="80">80</option><option value="120" selected>120</option><option value="200">200</option></select>
+            CHUNKS: <select id="chunkSelect" style="background:var(--bg-elevated); color:var(--text-primary); border:1px solid var(--border); padding:5px 10px; border-radius:6px; outline:none;"><option value="80">80</option><option value="120" selected>120 (Turbo)</option><option value="200">200 (Extreme)</option></select>
           </div>
         </div>
       </div>
@@ -179,7 +197,7 @@
       <div class="node-combiner-card">
         <div class="card-header">
           <span>MULTI-DEVICE CHANNEL BONDING (LIVE NODE GRAPH)</span>
-          <span style="color:var(--accent)">TAP ANY DEVICE TO TOGGLE</span>
+          <span style="color:var(--accent)">TAP ANY NODE TO TOGGLE</span>
         </div>
         <div class="combiner-stage">
           <div class="combiner-sources" id="combinerSourcesList"></div>
@@ -233,7 +251,7 @@
       </div>
 
       <div class="card">
-        <div class="card-header"><span>NETWORK INTERFACES</span><button class="toggle-switch" id="addInterfaceBtn">+ Add Stream</button></div>
+        <div class="card-header"><span>NETWORK INTERFACES &amp; STREAMS</span><button class="toggle-switch" id="addInterfaceBtn">+ Add Stream</button></div>
         <div class="interfaces-grid" id="interfacesGrid"></div>
       </div>
     </section>
@@ -242,42 +260,12 @@
     <section class="tab-section" id="view-swarm">
       <div class="telemetry-layout">
         <div class="card">
-          <div class="card-header"><span>HOST ROOM</span><span>WEBRTC P2P</span></div>
+          <div class="card-header"><span>HOST SWARM ROOM</span><span>WEBRTC P2P</span></div>
           <p style="font-size:13px; color:var(--text-secondary); line-height:1.5;">Doosre phone mein yeh app khol kar yeh Room Code dalein:</p>
           <div style="font-family:'Space Grotesk',sans-serif; font-size:36px; font-weight:700; letter-spacing:0.2em; text-align:center; padding:16px; margin:14px 0; background:var(--bg-elevated); border-radius:10px; color:var(--accent);" id="hostRoomCode">....</div>
-          <div style="font-family:'JetBrains Mono',monospace; font-size:11.5px; color:var(--success);" id="swarmHostStatus">Initializing...</div>
+          <div style="font-family:'JetBrains Mono',monospace; font-size:11.5px; color:var(--success);" id="swarmHostStatus">Initializing WebRTC Server...</div>
         </div>
         <div class="card">
           <div class="card-header"><span>JOIN REMOTE ROOM</span></div>
           <p style="font-size:13px; color:var(--text-secondary); line-height:1.5; margin-bottom:12px;">Main phone ka code yahan dalein:</p>
-          <input type="number" id="remoteCodeInput" class="url-input" style="margin-bottom:12px; text-align:center; font-size:18px;" placeholder="4-Digit Code" />
-          <button class="btn btn-primary" style="width:100%; justify-content:center;" id="joinSwarmBtn">Connect &amp; Link Bandwidth</button>
-          <div style="font-family:'JetBrains Mono',monospace; font-size:11.5px; color:var(--text-secondary); margin-top:10px;" id="swarmClientStatus">Not connected</div>
-        </div>
-      </div>
-    </section>
-
-    <!-- TAB 3: SPEED LAB -->
-    <section class="tab-section" id="view-speedlab">
-      <div class="card" style="text-align:center; padding:28px 18px;">
-        <div class="card-header" style="justify-content:center;"><span>SPEED LAB — LIVE PING &amp; BANDWIDTH</span></div>
-        <div style="font-family:'Space Grotesk',sans-serif; font-size:48px; font-weight:700; color:var(--accent);" id="labSpeedReadout">0.0 Mbps</div>
-        <div style="font-family:'JetBrains Mono',monospace; font-size:13px; color:var(--text-secondary); margin:10px 0 22px;" id="labPingReadout">PING: -- ms</div>
-        <button class="btn btn-primary" id="startLabTestBtn" style="margin:0 auto; padding:12px 24px;">Start Real Speed Test</button>
-      </div>
-    </section>
-
-    <!-- TAB 4: DOWNLOADS HISTORY -->
-    <section class="tab-section" id="view-files">
-      <div class="card">
-        <div class="card-header"><span>DOWNLOAD HISTORY</span><button class="toggle-switch" id="clearHistoryBtn">Clear</button></div>
-        <div id="completedFilesList" style="display:flex; flex-direction:column; gap:10px; font-size:13px; color:var(--text-secondary);"><div>Abhi koi download nahi hua hai.</div></div>
-      </div>
-    </section>
-
-    <!-- TAB 5: SETTINGS -->
-    <section class="tab-section" id="view-settings">
-      <div class="card">
-        <div class="card-header"><span>SETTINGS</span></div>
-        <div style="display:flex; flex-direction:column; gap:14px;">
-          <div style="display:flex; justify-content:space-between; align-items:center;"><div style="font-weight:600; font-size:13.5px;">Theme Switcher</div
+          <input type="number" id="remoteCodeInput" cla

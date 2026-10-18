@@ -14,7 +14,6 @@
       --bg-surface: #111726;
       --bg-elevated: #182032;
       --border: rgba(255, 255, 255, 0.08);
-      --border-focus: #3b82f6;
       --text-primary: #f8fafc;
       --text-secondary: #94a3b8;
       --accent: #3b82f6;
@@ -23,561 +22,103 @@
       --warning: #f59e0b;
       --danger: #ef4444;
     }
-
     body.theme-light {
-      --bg-main: #f1f5f9;
-      --bg-surface: #ffffff;
-      --bg-elevated: #f8fafc;
-      --border: rgba(15, 23, 42, 0.09);
-      --text-primary: #0f172a;
-      --text-secondary: #64748b;
-      --accent: #2563eb;
-      --accent-glow: rgba(37, 99, 235, 0.2);
+      --bg-main: #f1f5f9; --bg-surface: #ffffff; --bg-elevated: #f8fafc;
+      --border: rgba(15, 23, 42, 0.09); --text-primary: #0f172a; --text-secondary: #64748b;
     }
+    body.skin-matrix { --bg-main: #040a06; --bg-surface: #09180e; --bg-elevated: #102618; --accent: #00ff66; }
+    body.skin-crimson { --bg-main: #0e0508; --bg-surface: #1c0b11; --bg-elevated: #2b111a; --accent: #ff2a5f; }
 
-    body.theme-cyber {
-      --bg-main: #06080e;
-      --bg-surface: #0d121f;
-      --bg-elevated: #141c2e;
-      --accent: #00f0ff;
-      --accent-glow: rgba(0, 240, 255, 0.3);
-    }
+    * { box-sizing: border-box; margin: 0; padding: 0; user-select: none; -webkit-tap-highlight-color: transparent; }
+    body { background-color: var(--bg-main); color: var(--text-primary); font-family: 'Inter', sans-serif; min-height: 100vh; padding-bottom: 88px; }
+    .container { max-width: 1200px; margin: 0 auto; padding: 14px; }
 
-    * {
-      box-sizing: border-box;
-      margin: 0;
-      padding: 0;
-      user-select: none;
-      -webkit-tap-highlight-color: transparent;
-    }
+    .toast-box { position: fixed; top: 16px; right: 16px; z-index: 2000; display: flex; flex-direction: column; gap: 8px; max-width: 340px; }
+    .toast { background: var(--bg-elevated); color: var(--text-primary); border: 1px solid var(--border); border-left: 4px solid var(--accent); padding: 12px 16px; border-radius: 10px; font-size: 12.5px; font-weight: 500; box-shadow: 0 10px 25px rgba(0,0,0,0.4); }
 
-    body {
-      background-color: var(--bg-main);
-      color: var(--text-primary);
-      font-family: 'Inter', sans-serif;
-      min-height: 100vh;
-      padding-bottom: 88px;
-      transition: background 0.25s, color 0.25s;
-    }
+    .app-header { display: flex; align-items: center; justify-content: space-between; background: var(--bg-surface); border: 1px solid var(--border); padding: 14px 18px; border-radius: 14px; margin-bottom: 14px; }
+    .brand-group { display: flex; align-items: center; gap: 12px; }
+    .brand-icon { width: 36px; height: 36px; border-radius: 9px; background: var(--accent); display: flex; align-items: center; justify-content: center; color: #fff; }
+    .brand-name { font-family: 'Space Grotesk', sans-serif; font-size: 17px; font-weight: 700; }
+    .status-pill { display: flex; align-items: center; gap: 6px; font-family: 'JetBrains Mono', monospace; font-size: 11px; padding: 6px 12px; border-radius: 20px; background: rgba(16, 185, 129, 0.12); color: var(--success); border: 1px solid rgba(16, 185, 129, 0.25); font-weight: 600; }
+    .status-dot { width: 7px; height: 7px; border-radius: 50%; background: var(--success); }
 
-    .container {
-      max-width: 1200px;
-      margin: 0 auto;
-      padding: 14px;
-    }
+    .quick-top-bar { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 14px; }
+    .task-creator { background: var(--bg-surface); border: 1px solid var(--border); border-radius: 14px; padding: 16px; margin-bottom: 16px; }
+    .url-row { display: flex; gap: 10px; flex-wrap: wrap; }
+    .input-wrapper { flex: 1; min-width: 220px; position: relative; display: flex; align-items: center; }
+    .url-input { width: 100%; background: var(--bg-elevated); border: 1px solid var(--border); color: var(--text-primary); padding: 12px 38px 12px 14px; border-radius: 10px; font-family: 'JetBrains Mono', monospace; font-size: 12.5px; outline: none; }
+    .clear-input-btn { position: absolute; right: 10px; background: none; border: none; color: var(--text-secondary); cursor: pointer; }
 
-    /* Toast Notification */
-    .toast-box {
-      position: fixed;
-      top: 16px;
-      right: 16px;
-      z-index: 2000;
-      display: flex;
-      flex-direction: column;
-      gap: 8px;
-      max-width: 340px;
-    }
+    .preset-chips-bar { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; margin-top: 12px; padding-top: 12px; border-top: 1px dashed var(--border); }
+    .chip-btn { background: var(--bg-elevated); color: var(--text-primary); border: 1px solid var(--border); padding: 6px 12px; border-radius: 8px; font-family: 'JetBrains Mono', monospace; font-size: 11px; font-weight: 600; cursor: pointer; }
+    .chip-btn:hover { border-color: var(--accent); color: var(--accent); }
 
-    .toast {
-      background: var(--bg-elevated);
-      color: var(--text-primary);
-      border: 1px solid var(--border);
-      border-left: 4px solid var(--accent);
-      padding: 12px 16px;
-      border-radius: 10px;
-      font-size: 12.5px;
-      font-weight: 500;
-      box-shadow: 0 10px 25px rgba(0,0,0,0.4);
-      animation: slideIn 0.25s ease;
-    }
+    .controls-toolbar { display: flex; align-items: center; justify-content: space-between; margin-top: 14px; padding-top: 14px; border-top: 1px solid var(--border); flex-wrap: wrap; gap: 10px; }
+    .btn-group { display: flex; gap: 8px; flex-wrap: wrap; }
+    .btn { display: inline-flex; align-items: center; gap: 7px; padding: 9px 15px; border-radius: 9px; font-size: 12.5px; font-weight: 600; cursor: pointer; border: 1px solid var(--border); background: var(--bg-elevated); color: var(--text-primary); }
+    .btn:hover:not(:disabled) { border-color: var(--accent); }
+    .btn:disabled { opacity: 0.4; cursor: not-allowed; }
+    .btn-primary { background: var(--accent); color: #fff; border-color: var(--accent); }
+    .btn-warning { background: rgba(245, 158, 11, 0.15); color: var(--warning); border-color: rgba(245, 158, 11, 0.35); }
+    .btn-danger { background: rgba(239, 68, 68, 0.15); color: var(--danger); border-color: rgba(239, 68, 68, 0.35); }
+    .btn-success { background: rgba(16, 185, 129, 0.15); color: var(--success); border-color: rgba(16, 185, 129, 0.35); }
 
-    @keyframes slideIn {
-      from { transform: translateX(100%); opacity: 0; }
-      to { transform: translateX(0); opacity: 1; }
-    }
-
-    /* Professional Header */
-    .app-header {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      background: var(--bg-surface);
-      border: 1px solid var(--border);
-      padding: 14px 18px;
-      border-radius: 14px;
-      margin-bottom: 16px;
-    }
-
-    .brand-group {
-      display: flex;
-      align-items: center;
-      gap: 12px;
-    }
-
-    .brand-icon {
-      width: 36px;
-      height: 36px;
-      border-radius: 9px;
-      background: var(--accent);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      color: #fff;
-      box-shadow: 0 4px 14px var(--accent-glow);
-    }
-
-    .brand-name {
-      font-family: 'Space Grotesk', sans-serif;
-      font-size: 17px;
-      font-weight: 700;
-      letter-spacing: 0.02em;
-    }
-
-    .status-pill {
-      display: flex;
-      align-items: center;
-      gap: 6px;
-      font-family: 'JetBrains Mono', monospace;
-      font-size: 11px;
-      padding: 6px 12px;
-      border-radius: 20px;
-      background: rgba(16, 185, 129, 0.12);
-      color: var(--success);
-      border: 1px solid rgba(16, 185, 129, 0.25);
-      font-weight: 600;
-    }
-
-    .status-dot {
-      width: 7px;
-      height: 7px;
-      border-radius: 50%;
-      background: var(--success);
-    }
-
-    /* Task Creation Bar */
-    .task-creator {
-      background: var(--bg-surface);
-      border: 1px solid var(--border);
-      border-radius: 14px;
-      padding: 16px;
-      margin-bottom: 16px;
-    }
-
-    .url-row {
-      display: flex;
-      gap: 10px;
-      flex-wrap: wrap;
-    }
-
-    .input-wrapper {
-      flex: 1;
-      min-width: 220px;
-      position: relative;
-      display: flex;
-      align-items: center;
-    }
-
-    .url-input {
-      width: 100%;
-      background: var(--bg-elevated);
-      border: 1px solid var(--border);
-      color: var(--text-primary);
-      padding: 12px 38px 12px 14px;
-      border-radius: 10px;
-      font-family: 'JetBrains Mono', monospace;
-      font-size: 12.5px;
-      outline: none;
-      transition: border 0.2s;
-    }
-
-    .url-input:focus {
-      border-color: var(--accent);
-    }
-
-    .clear-input-btn {
-      position: absolute;
-      right: 10px;
-      background: none;
-      border: none;
-      color: var(--text-secondary);
-      cursor: pointer;
-      padding: 4px;
-      display: flex;
-    }
-
-    /* Transport Control Toolbar */
-    .controls-toolbar {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      margin-top: 14px;
-      padding-top: 14px;
-      border-top: 1px solid var(--border);
-      flex-wrap: wrap;
-      gap: 10px;
-    }
-
-    .btn-group {
-      display: flex;
-      gap: 8px;
-      flex-wrap: wrap;
-    }
-
-    .btn {
-      display: inline-flex;
-      align-items: center;
-      gap: 7px;
-      padding: 9px 15px;
-      border-radius: 9px;
-      font-family: 'Inter', sans-serif;
-      font-size: 12.5px;
-      font-weight: 600;
-      cursor: pointer;
-      border: 1px solid var(--border);
-      background: var(--bg-elevated);
-      color: var(--text-primary);
-      transition: all 0.15s ease;
-    }
-
-    .btn:hover:not(:disabled) {
-      border-color: var(--accent);
-    }
-
-    .btn:disabled {
-      opacity: 0.4;
-      cursor: not-allowed;
-    }
-
-    .btn-primary {
-      background: var(--accent);
-      color: #fff;
-      border-color: var(--accent);
-      box-shadow: 0 4px 12px var(--accent-glow);
-    }
-
-    .btn-warning {
-      background: rgba(245, 158, 11, 0.15);
-      color: var(--warning);
-      border-color: rgba(245, 158, 11, 0.35);
-    }
-
-    .btn-danger {
-      background: rgba(239, 68, 68, 0.15);
-      color: var(--danger);
-      border-color: rgba(239, 68, 68, 0.35);
-    }
-
-    .btn-success {
-      background: rgba(16, 185, 129, 0.15);
-      color: var(--success);
-      border-color: rgba(16, 185, 129, 0.35);
-    }
-
-    .thread-selector {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      font-size: 12px;
-      color: var(--text-secondary);
-      font-family: 'JetBrains Mono', monospace;
-    }
-
-    .select-box {
-      background: var(--bg-elevated);
-      color: var(--text-primary);
-      border: 1px solid var(--border);
-      padding: 6px 10px;
-      border-radius: 7px;
-      font-family: 'JetBrains Mono', monospace;
-      font-size: 12px;
-      outline: none;
-    }
-
-    /* Views */
     .tab-section { display: none; flex-direction: column; gap: 16px; }
     .tab-section.active { display: flex; }
 
-    /* Telemetry Grid */
-    .telemetry-grid {
-      display: grid;
-      grid-template-columns: 1fr 1.35fr;
-      gap: 16px;
-    }
+    .node-combiner-card, .telemetry-grid, .card { background: var(--bg-surface); border: 1px solid var(--border); border-radius: 14px; padding: 18px; margin-bottom: 16px; }
+    .combiner-stage { display: flex; align-items: center; justify-content: space-between; gap: 10px; min-height: 200px; }
+    .combiner-sources { display: flex; flex-direction: column; gap: 8px; width: 36%; }
+    .combiner-item { display: flex; justify-content: space-between; align-items: center; padding: 5px 10px; background: var(--bg-elevated); border: 1px solid var(--border); border-radius: 7px; font-family: 'JetBrains Mono', monospace; font-size: 11px; cursor: pointer; }
+    .combiner-item.off { opacity: 0.35; }
+    .combiner-svg { flex: 1; height: 190px; min-width: 90px; overflow: visible; }
+    .combiner-target { border: 1.5px solid var(--accent); background: var(--bg-elevated); border-radius: 12px; padding: 14px 16px; min-width: 165px; text-align: center; }
+    .anim-dash { fill: none; stroke-dasharray: 6 5; animation: flowDash 0.55s linear infinite; }
+    @keyframes flowDash { to { stroke-dashoffset: -11; } }
 
-    .card {
-      background: var(--bg-surface);
-      border: 1px solid var(--border);
-      border-radius: 14px;
-      padding: 18px;
-    }
+    .telemetry-layout { display: grid; grid-template-columns: 1fr 1.35fr; gap: 16px; }
+    .card-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 14px; font-family: 'JetBrains Mono', monospace; font-size: 11px; color: var(--text-secondary); text-transform: uppercase; }
 
-    .card-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-bottom: 14px;
-      font-family: 'JetBrains Mono', monospace;
-      font-size: 11px;
-      color: var(--text-secondary);
-      text-transform: uppercase;
-      letter-spacing: 0.06em;
-    }
+    .gauge-container { display: flex; flex-direction: column; align-items: center; justify-content: center; }
+    .gauge-ring { position: relative; width: 190px; height: 190px; display: flex; align-items: center; justify-content: center; }
+    .gauge-svg { position: absolute; width: 100%; height: 100%; transform: rotate(-90deg); }
+    .gauge-track { fill: none; stroke: var(--bg-elevated); stroke-width: 12; }
+    .gauge-fill { fill: none; stroke: var(--accent); stroke-width: 12; stroke-linecap: round; stroke-dasharray: 534; stroke-dashoffset: 534; transition: stroke-dashoffset 0.3s ease; }
+    .gauge-readout { text-align: center; z-index: 2; }
+    .speed-big { font-family: 'Space Grotesk', sans-serif; font-size: 40px; font-weight: 700; line-height: 1; }
+    .metrics-row { display: grid; grid-template-columns: repeat(3, 1fr); width: 100%; margin-top: 16px; padding-top: 12px; border-top: 1px solid var(--border); text-align: center; font-family: 'JetBrains Mono', monospace; font-size: 11px; }
 
-    /* Speedometer Gauge */
-    .gauge-container {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-    }
+    #chartCanvas { width: 100%; height: 185px; display: block; }
 
-    .gauge-ring {
-      position: relative;
-      width: 190px;
-      height: 190px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-    }
+    .job-header { display: flex; justify-content: space-between; align-items: flex-start; gap: 12px; margin-bottom: 10px; flex-wrap: wrap; }
+    .job-title { font-family: 'JetBrains Mono', monospace; font-size: 13.5px; font-weight: 600; word-break: break-all; }
+    .progress-bar-wrap { width: 100%; height: 8px; background: var(--bg-elevated); border-radius: 4px; overflow: hidden; margin: 10px 0; }
+    .progress-bar-fill { height: 100%; width: 0%; background: var(--accent); transition: width 0.2s linear; }
+    .chunk-map { display: grid; grid-template-columns: repeat(auto-fill, minmax(12px, 1fr)); gap: 3px; margin-top: 10px; }
+    .chunk-block { height: 12px; border-radius: 2px; background: var(--bg-elevated); }
 
-    .gauge-svg {
-      position: absolute;
-      width: 100%;
-      height: 100%;
-      transform: rotate(-90deg);
-    }
+    .interfaces-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 12px; }
+    .iface-card { background: var(--bg-surface); border: 1px solid var(--border); border-radius: 12px; padding: 14px; display: flex; flex-direction: column; gap: 8px; }
+    .iface-card.disabled { opacity: 0.45; }
+    .iface-top { display: flex; justify-content: space-between; align-items: center; }
+    .color-dot { width: 9px; height: 9px; border-radius: 50%; }
+    .toggle-switch { font-family: 'JetBrains Mono', monospace; font-size: 10.5px; padding: 3px 8px; border-radius: 6px; border: 1px solid var(--border); background: var(--bg-elevated); color: var(--text-primary); cursor: pointer; }
 
-    .gauge-track {
-      fill: none;
-      stroke: var(--bg-elevated);
-      stroke-width: 12;
-    }
+    .bottom-nav { position: fixed; bottom: 0; left: 0; right: 0; background: var(--bg-surface); border-top: 1px solid var(--border); display: flex; justify-content: space-around; padding: 8px 12px; z-index: 1000; }
+    .nav-btn { background: none; border: none; color: var(--text-secondary); display: flex; flex-direction: column; align-items: center; gap: 4px; font-size: 11px; font-weight: 600; cursor: pointer; padding: 6px 16px; border-radius: 10px; }
+    .nav-btn.active { color: var(--accent); background: rgba(59, 130, 246, 0.1); }
+    .nav-btn svg { width: 20px; height: 20px; stroke: currentColor; stroke-width: 2; fill: none; }
+    .icon-sm { width: 15px; height: 15px; stroke: currentColor; stroke-width: 2.2; fill: none; }
 
-    .gauge-fill {
-      fill: none;
-      stroke: var(--accent);
-      stroke-width: 12;
-      stroke-linecap: round;
-      stroke-dasharray: 534;
-      stroke-dashoffset: 534;
-      transition: stroke-dashoffset 0.3s ease;
-    }
-
-    .gauge-readout {
-      text-align: center;
-      z-index: 2;
-    }
-
-    .speed-big {
-      font-family: 'Space Grotesk', sans-serif;
-      font-size: 40px;
-      font-weight: 700;
-      line-height: 1;
-    }
-
-    .speed-unit {
-      font-family: 'JetBrains Mono', monospace;
-      font-size: 11px;
-      color: var(--text-secondary);
-      margin-top: 4px;
-    }
-
-    .metrics-row {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      width: 100%;
-      margin-top: 16px;
-      padding-top: 12px;
-      border-top: 1px solid var(--border);
-      text-align: center;
-      font-family: 'JetBrains Mono', monospace;
-      font-size: 11px;
-    }
-
-    .metric-val {
-      font-size: 13.5px;
-      font-weight: 700;
-      color: var(--text-primary);
-      margin-top: 2px;
-    }
-
-    #chartCanvas {
-      width: 100%;
-      height: 185px;
-      display: block;
-    }
-
-    /* Active File Job Card */
-    .job-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: flex-start;
-      gap: 12px;
-      margin-bottom: 10px;
-      flex-wrap: wrap;
-    }
-
-    .job-title {
-      font-family: 'JetBrains Mono', monospace;
-      font-size: 13.5px;
-      font-weight: 600;
-      word-break: break-all;
-    }
-
-    .job-sub {
-      font-size: 12px;
-      color: var(--text-secondary);
-      margin-top: 4px;
-      font-family: 'JetBrains Mono', monospace;
-    }
-
-    .progress-bar-wrap {
-      width: 100%;
-      height: 8px;
-      background: var(--bg-elevated);
-      border-radius: 4px;
-      overflow: hidden;
-      margin: 10px 0;
-    }
-
-    .progress-bar-fill {
-      height: 100%;
-      width: 0%;
-      background: var(--accent);
-      transition: width 0.2s linear;
-    }
-
-    .chunk-map {
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(12px, 1fr));
-      gap: 3px;
-      margin-top: 10px;
-    }
-
-    .chunk-block {
-      height: 12px;
-      border-radius: 2px;
-      background: var(--bg-elevated);
-      transition: background 0.15s ease;
-    }
-
-    /* Network Interfaces Grid */
-    .interfaces-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
-      gap: 12px;
-    }
-
-    .iface-card {
-      background: var(--bg-surface);
-      border: 1px solid var(--border);
-      border-radius: 12px;
-      padding: 14px;
-      display: flex;
-      flex-direction: column;
-      gap: 8px;
-      transition: all 0.2s;
-    }
-
-    .iface-card.disabled {
-      opacity: 0.45;
-    }
-
-    .iface-top {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-    }
-
-    .iface-title {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      font-size: 13px;
-      font-weight: 600;
-    }
-
-    .color-dot {
-      width: 9px;
-      height: 9px;
-      border-radius: 50%;
-    }
-
-    .toggle-switch {
-      font-family: 'JetBrains Mono', monospace;
-      font-size: 10.5px;
-      padding: 3px 8px;
-      border-radius: 6px;
-      border: 1px solid var(--border);
-      background: var(--bg-elevated);
-      color: var(--text-primary);
-      cursor: pointer;
-    }
-
-    /* Bottom Navigation Bar */
-    .bottom-nav {
-      position: fixed;
-      bottom: 0;
-      left: 0;
-      right: 0;
-      background: var(--bg-surface);
-      border-top: 1px solid var(--border);
-      display: flex;
-      justify-content: space-around;
-      padding: 8px 12px;
-      z-index: 1000;
-    }
-
-    .nav-btn {
-      background: none;
-      border: none;
-      color: var(--text-secondary);
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      gap: 4px;
-      font-family: 'Inter', sans-serif;
-      font-size: 11px;
-      font-weight: 600;
-      cursor: pointer;
-      padding: 6px 16px;
-      border-radius: 10px;
-      transition: all 0.2s;
-    }
-
-    .nav-btn.active {
-      color: var(--accent);
-      background: rgba(59, 130, 246, 0.1);
-    }
-
-    .nav-btn svg {
-      width: 20px;
-      height: 20px;
-      stroke: currentColor;
-      stroke-width: 2;
-      fill: none;
-    }
-
-    .icon-sm {
-      width: 15px;
-      height: 15px;
-      stroke: currentColor;
-      stroke-width: 2.2;
-      fill: none;
-    }
-
-    @media (max-width: 820px) {
-      .telemetry-grid { grid-template-columns: 1fr; }
-    }
+    @media (max-width: 820px) { .telemetry-layout { grid-template-columns: 1fr; } }
   </style>
 </head>
 <body>
 
-  <!-- Toast Container -->
   <div class="toast-box" id="toastBox"></div>
 
   <div class="container">
-    <!-- Top Bar -->
     <header class="app-header">
       <div class="brand-group">
         <div class="brand-icon">
@@ -588,72 +129,72 @@
           <div style="font-size:11px; color:var(--text-secondary); font-family:'JetBrains Mono',monospace;">Multi-Interface Download Manager</div>
         </div>
       </div>
-
-      <div style="display:flex; align-items:center; gap:10px;">
-        <button class="btn btn-primary" id="pwaInstallBtn" style="display:none;">Install App</button>
-        <div class="status-pill" id="engineStatusPill">
-          <span class="status-dot" id="statusDot"></span>
-          <span id="engineStateText">IDLE / READY</span>
-        </div>
+      <div class="status-pill" id="engineStatusPill">
+        <span class="status-dot" id="statusDot"></span>
+        <span id="engineStateText">IDLE / READY</span>
       </div>
     </header>
 
-    <!-- TAB 1: DASHBOARD & DOWNLOAD CONTROLS -->
+    <!-- TAB 1: DASHBOARD -->
     <section class="tab-section active" id="view-dashboard">
-      <!-- URL & Transport Controller -->
+      <div class="quick-top-bar">
+        <button class="btn btn-primary" id="quickLiveBtn">⚡ Live Multi-Stream Test</button>
+        <button class="btn" id="quickDemoBtn">🔥 400+ Mbps Overdrive Demo</button>
+        <button class="btn" id="quickSkinBtn">🎨 Change Skin (Themes)</button>
+        <button class="btn" id="quickAddSimBtn">➕ Add SIM/Phone</button>
+        <button class="btn" id="forceSaveBtn">💾 Save Current File</button>
+      </div>
+
       <div class="task-creator">
         <div class="url-row">
           <div class="input-wrapper">
-            <input type="text" id="targetUrlInput" class="url-input" placeholder="Paste direct download URL (HTTP/HTTPS)..." />
-            <button class="clear-input-btn" id="clearUrlBtn" title="Clear URL">
-              <svg class="icon-sm" viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
-            </button>
+            <input type="text" id="targetUrlInput" class="url-input" placeholder="Paste direct download URL..." />
+            <button class="clear-input-btn" id="clearUrlBtn">✕</button>
           </div>
-          <button class="btn btn-primary" id="startBtn">
-            <svg class="icon-sm" viewBox="0 0 24 24"><polygon points="5 3 19 12 5 21 5 3"/></svg>
-            <span>Start Download</span>
-          </button>
+          <button class="btn btn-primary" id="startBtn">Start Download</button>
         </div>
 
-        <!-- Professional Transport Buttons: Pause, Resume, Stop, Reset -->
+        <div class="preset-chips-bar">
+          <span style="font-size:11px; color:var(--text-secondary); font-family:'JetBrains Mono',monospace;">Quick Files:</span>
+          <button class="chip-btn" data-url="https://speed.cloudflare.com/__down?bytes=10485760" data-name="Cloudflare_10MB_Turbo.bin">📦 10 MB Turbo Bin</button>
+          <button class="chip-btn" data-url="https://speed.cloudflare.com/__down?bytes=26214400" data-name="HyperFlux_25MB_Archive.zip">🗜️ 25 MB Archive</button>
+          <button class="chip-btn" data-url="https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerBlazes.mp4" data-name="Sample_HD_Video.mp4">🎬 HD Video (.MP4)</button>
+          <button class="chip-btn" id="winIsoPresetBtn">💿 Win10_ISO (400 Mbps Mode)</button>
+        </div>
+
         <div class="controls-toolbar">
           <div class="btn-group">
-            <button class="btn btn-warning" id="pauseBtn" disabled>
-              <svg class="icon-sm" viewBox="0 0 24 24"><rect x="6" y="4" width="4" height="16"/><rect x="14" y="4" width="4" height="16"/></svg>
-              <span>Pause</span>
-            </button>
-            <button class="btn btn-success" id="resumeBtn" disabled>
-              <svg class="icon-sm" viewBox="0 0 24 24"><polygon points="5 3 19 12 5 21 5 3"/></svg>
-              <span>Resume</span>
-            </button>
-            <button class="btn btn-danger" id="stopBtn" disabled>
-              <svg class="icon-sm" viewBox="0 0 24 24"><rect x="4" y="4" width="16" height="16" rx="2"/></svg>
-              <span>Stop / Cancel</span>
-            </button>
-            <button class="btn" id="resetBtn">
-              <svg class="icon-sm" viewBox="0 0 24 24"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/></svg>
-              <span>Reset</span>
-            </button>
+            <button class="btn btn-warning" id="pauseBtn" disabled>Pause</button>
+            <button class="btn btn-success" id="resumeBtn" disabled>Resume</button>
+            <button class="btn btn-danger" id="stopBtn" disabled>Stop / Cancel</button>
+            <button class="btn" id="resetBtn">Reset</button>
           </div>
-
-          <div class="thread-selector">
-            <span>STREAMS / CHUNKS:</span>
-            <select class="select-box" id="chunkSelect">
-              <option value="80">80 Chunks (Standard)</option>
-              <option value="120" selected>120 Chunks (Turbo)</option>
-              <option value="200">200 Chunks (Extreme)</option>
-            </select>
+          <div style="font-size:12px; color:var(--text-secondary); font-family:'JetBrains Mono',monospace;">
+            CHUNKS: <select id="chunkSelect" style="background:var(--bg-elevated); color:var(--text-primary); border:1px solid var(--border); padding:4px 8px; border-radius:6px;"><option value="80">80</option><option value="120" selected>120</option><option value="200">200</option></select>
           </div>
         </div>
       </div>
 
-      <!-- Speedometer + Live Graph -->
-      <div class="telemetry-grid">
-        <div class="card">
-          <div class="card-header">
-            <span>COMBINED BANDWIDTH</span>
-            <span id="activeChannelsLabel">6 INTERFACES ACTIVE</span>
+      <!-- Video-Style Node-Link Combiner Graph -->
+      <div class="node-combiner-card">
+        <div class="card-header">
+          <span>MULTI-DEVICE CHANNEL BONDING (LIVE NODE GRAPH)</span>
+          <span style="color:var(--accent)">TAP ANY DEVICE TO TOGGLE</span>
+        </div>
+        <div class="combiner-stage">
+          <div class="combiner-sources" id="combinerSourcesList"></div>
+          <svg class="combiner-svg" id="combinerSvgCanvas" preserveAspectRatio="none"></svg>
+          <div class="combiner-target">
+            <div style="font-size:10px; color:var(--text-secondary);">COMBINED SPEED</div>
+            <div style="font-family:'Space Grotesk',sans-serif; font-size:32px; font-weight:700; margin:4px 0;" id="combinerTotalNum">0.0</div>
+            <div style="font-size:11px; color:var(--accent);">Mbps BONDED</div>
           </div>
+        </div>
+      </div>
+
+      <div class="telemetry-layout">
+        <div class="card">
+          <div class="card-header"><span>BANDWIDTH GAUGE</span><span id="activeChannelsLabel">6 ACTIVE</span></div>
           <div class="gauge-container">
             <div class="gauge-ring">
               <svg class="gauge-svg" viewBox="0 0 200 200">
@@ -662,84 +203,54 @@
               </svg>
               <div class="gauge-readout">
                 <div class="speed-big" id="totalSpeedVal">0.0</div>
-                <div class="speed-unit">Mbps TOTAL</div>
+                <div style="font-size:11px; color:var(--text-secondary);">Mbps TOTAL</div>
               </div>
             </div>
-
             <div class="metrics-row">
-              <div>
-                <div>PEAK SPEED</div>
-                <div class="metric-val" id="peakSpeedVal">0.0 Mbps</div>
-              </div>
-              <div>
-                <div>AVERAGE</div>
-                <div class="metric-val" id="avgSpeedVal">0.0 Mbps</div>
-              </div>
-              <div>
-                <div>MULTIPLIER</div>
-                <div class="metric-val" id="gainFactorVal" style="color:var(--success)">1.0x</div>
-              </div>
+              <div>PEAK<div id="peakSpeedVal" style="color:var(--text-primary); font-weight:700;">0.0</div></div>
+              <div>AVG<div id="avgSpeedVal" style="color:var(--text-primary); font-weight:700;">0.0</div></div>
+              <div>BOOST<div id="gainFactorVal" style="color:var(--success); font-weight:700;">1.0x</div></div>
             </div>
           </div>
         </div>
 
         <div class="card">
-          <div class="card-header">
-            <span>REAL-TIME INTERFACE STACK</span>
-            <span id="graphStatusLabel">LIVE TELEMETRY</span>
-          </div>
-          <canvas id="chartCanvas" width="54height="185"></canvas>
-          <div style="display:flex; justify-content:space-between; font-size:10px; color:var(--text-secondary); margin-top:8px; font-family:'JetBrains Mono',monospace;">
-            <span>-30s</span><span>-20s</span><span>-10s</span><span>0s (NOW)</span>
-          </div>
+          <div class="card-header"><span>LIVE SPECTRUM TELEMETRY</span></div>
+          <canvas id="chartCanvas" width="540" height="185"></canvas>
         </div>
       </div>
 
-      <!-- AJob Progress & Chunk Segmentation Map -->
       <div class="card">
         <div class="job-header">
           <div>
             <div class="job-title" id="jobFileName">No Active Download Task</div>
-            <div class="job-sub" id="jobSubStats">0.00 MB / 0.00 MB • Status: Ready</div>
+            <div style="font-size:12px; color:var(--text-secondary); margin-top:4px;" id="jobSubStats">0.00 MB / 0.00 MB • Status: Ready</div>
           </div>
-          <div style="font-family:'Space Grotesk',sans-serif; font-size:24px; font-weight:700; color:var(--accent);" id="jobPercent">0%</div>
+          <div style="font-family:'Space Grotesk',sans-serif; font-size:22px; font-weight:700; color:var(--accent);" id="jobPercent">0%</div>
         </div>
-
-        <div class="progress-bar-wrap">
-          <div class="progress-bar-fill" id="jobProgressBar"></div>
-        </div>
-
+        <div class="progress-bar-wrap"><div class="progress-bar-fill" id="jobProgressBar"></div></div>
         <div class="chunk-map" id="chunkMapGrid"></div>
       </div>
 
-      <!-- Network Interfaces Manager -->
       <div class="card">
-        <div class="card-header">
-          <span>NETWORK INTERFACES &amp; WORKER STREAMS</span>
-          <button class="toggle-switch" id="addInterfaceBtn">+ Add Interface</button>
-        </div>
+        <div class="card-header"><span>NETWORK INTERFACES</span><button class="toggle-switch" id="addInterfaceBtn">+ Add Stream</button></div>
         <div class="interfaces-grid" id="interfacesGrid"></div>
       </div>
     </section>
 
-        <!-- TAB 2: SWARM P2P MULTI-DEVICE LINK -->
+    <!-- TAB 2: SWARM P2P -->
     <section class="tab-section" id="view-swarm">
-      <div class="telemetry-grid">
+      <div class="telemetry-layout">
         <div class="card">
-          <div class="card-header"><span>HOST SWARM ROOM</span><span>WEBRTC P2P</span></div>
-          <p style="font-size:13px; color:var(--text-secondary); line-height:1.5;">
-            अपने दूसरे फोन में यह ऐप खोलकर नीचे दिया गया 4-अंकों का <strong>Room Code</strong> डालें ताकि दोनों फोन्स का नेटवर्क आपस में जुड़ जाए:
-          </p>
+          <div class="card-header"><span>HOST ROOM</span><span>WEBRTC P2P</span></div>
+          <p style="font-size:13px; color:var(--text-secondary); line-height:1.5;">Doosre phone mein yeh app khol kar yeh Room Code dalein:</p>
           <div style="font-family:'Space Grotesk',sans-serif; font-size:36px; font-weight:700; letter-spacing:0.2em; text-align:center; padding:16px; margin:14px 0; background:var(--bg-elevated); border-radius:10px; color:var(--accent);" id="hostRoomCode">....</div>
-          <div style="font-family:'JetBrains Mono',monospace; font-size:11.5px; color:var(--success);" id="swarmHostStatus">Initializing P2P Server...</div>
+          <div style="font-family:'JetBrains Mono',monospace; font-size:11.5px; color:var(--success);" id="swarmHostStatus">Initializing...</div>
         </div>
-
         <div class="card">
-          <div class="card-header"><span>JOIN REMOTE ROOM</span><span>BANDWIDTH NODE</span></div>
-          <p style="font-size:13px; color:var(--text-secondary); line-height:1.5; margin-bottom:12px;">
-            मुख्य फोन पर दिखने वाला 4-अंकों का कोड यहाँ डालें और अपनी लाइव स्पीड शेयर करें:
-          </p>
-          <input type="number" id="remoteCodeInput" class="url-input" style="margin-bottom:12px; text-align:center; font-size:18px;" placeholder="Enter 4-Digit Code" />
+          <div class="card-header"><span>JOIN REMOTE ROOM</span></div>
+          <p style="font-size:13px; color:var(--text-secondary); line-height:1.5; margin-bottom:12px;">Main phone ka code yahan dalein:</p>
+          <input type="number" id="remoteCodeInput" class="url-input" style="margin-bottom:12px; text-align:center; font-size:18px;" placeholder="4-Digit Code" />
           <button class="btn btn-primary" style="width:100%; justify-content:center;" id="joinSwarmBtn">Connect &amp; Link Bandwidth</button>
           <div style="font-family:'JetBrains Mono',monospace; font-size:11.5px; color:var(--text-secondary); margin-top:10px;" id="swarmClientStatus">Not connected</div>
         </div>
@@ -749,325 +260,24 @@
     <!-- TAB 3: SPEED LAB -->
     <section class="tab-section" id="view-speedlab">
       <div class="card" style="text-align:center; padding:28px 18px;">
-        <div class="card-header" style="justify-content:center;"><span>SPEED LAB — LIVE PING, JITTER &amp; BANDWIDTH</span></div>
+        <div class="card-header" style="justify-content:center;"><span>SPEED LAB — LIVE PING &amp; BANDWIDTH</span></div>
         <div style="font-family:'Space Grotesk',sans-serif; font-size:48px; font-weight:700; color:var(--accent);" id="labSpeedReadout">0.0 Mbps</div>
-        <div style="font-family:'JetBrains Mono',monospace; font-size:13px; color:var(--text-secondary); margin:10px 0 22px;" id="labPingReadout">PING: -- ms &nbsp;|&nbsp; JITTER: -- ms</div>
-        <button class="btn btn-primary" id="startLabTestBtn" style="margin:0 auto; padding:12px 24px;">Start Real Speed &amp; Ping Test</button>
+        <div style="font-family:'JetBrains Mono',monospace; font-size:13px; color:var(--text-secondary); margin:10px 0 22px;" id="labPingReadout">PING: -- ms</div>
+        <button class="btn btn-primary" id="startLabTestBtn" style="margin:0 auto; padding:12px 24px;">Start Real Speed Test</button>
       </div>
     </section>
 
-    <!-- TAB 4: DOWNLOAD QUEUE & COMPLETED VAULT -->
+    <!-- TAB 4: DOWNLOADS HISTORY -->
     <section class="tab-section" id="view-files">
       <div class="card">
-        <div class="card-header">
-          <span>DOWNLOAD HISTORY &amp; COMPLETED FILES</span>
-          <button class="toggle-switch" id="clearHistoryBtn">Clear List</button>
-        </div>
-        <div id="completedFilesList" style="display:flex; flex-direction:column; gap:10px; font-size:13px; color:var(--text-secondary);">
-          <div>अभी कोई डाउनलोड पूरा नहीं हुआ है।</div>
-        </div>
+        <div class="card-header"><span>DOWNLOAD HISTORY</span><button class="toggle-switch" id="clearHistoryBtn">Clear</button></div>
+        <div id="completedFilesList" style="display:flex; flex-direction:column; gap:10px; font-size:13px; color:var(--text-secondary);"><div>Abhi koi download nahi hua hai.</div></div>
       </div>
     </section>
 
     <!-- TAB 5: SETTINGS -->
     <section class="tab-section" id="view-settings">
       <div class="card">
-        <div class="card-header"><span>APPLICATION SETTINGS &amp; DIAGNOSTICS</span></div>
+        <div class="card-header"><span>SETTINGS</span></div>
         <div style="display:flex; flex-direction:column; gap:14px;">
-          <div style="display:flex; justify-content:space-between; align-items:center; padding-bottom:12px; border-bottom:1px solid var(--border);">
-            <div>
-              <div style="font-weight:600; font-size:13.5px;">UI Color Theme</div>
-              <div style="font-size:12px; color:var(--text-secondary);">Switch between Dark, Cyber, Matrix, Crimson &amp; Light</div>
-            </div>
-            <button class="btn" id="themeSwitchBtn">Switch Theme</button>
-          </div>
-          <div style="display:flex; justify-content:space-between; align-items:center; padding-bottom:12px; border-bottom:1px solid var(--border);">
-            <div>
-              <div style="font-weight:600; font-size:13.5px;">Verify Multi-Stream Engine (10 MB Benchmark)</div>
-              <div style="font-size:12px; color:var(--text-secondary);">Test real chunk downloading via Cloudflare Edge</div>
-            </div>
-            <button class="btn btn-primary" id="runEdgeTestBtn">Run Live Test</button>
-          </div>
-          <div style="display:flex; justify-content:space-between; align-items:center;">
-            <div>
-              <div style="font-weight:600; font-size:13.5px;">400+ Mbps Hardware Stress Simulation</div>
-              <div style="font-size:12px; color:var(--text-secondary);">Test UI under 6-device 400 Mbps load</div>
-            </div>
-            <button class="btn" id="toggleStressSimBtn">Start Simulation</button>
-          </div>
-        </div>
-      </div>
-    </section>
-  </div>
-
-  <!-- Bottom Navigation Bar -->
-  <nav class="bottom-nav">
-    <button class="nav-btn active" onclick="openTab('dashboard', this)">
-      <svg viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="9"/><rect x="14" y="3" width="7" height="5"/><rect x="14" y="12" width="7" height="9"/><rect x="3" y="16" width="7" height="5"/></svg>
-      <span>Dashboard</span>
-    </button>
-    <button class="nav-btn" onclick="openTab('swarm', this)">
-      <svg viewBox="0 0 24 24"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/></svg>
-      <span>Swarm Link</span>
-    </button>
-    <button class="nav-btn" onclick="openTab('speedlab', this)">
-      <svg viewBox="0 0 24 24"><path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83"/></svg>
-      <span>Speed Lab</span>
-    </button>
-    <button class="nav-btn" onclick="openTab('files', this)">
-      <svg viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
-      <span>Downloads</span>
-    </button>
-    <button class="nav-btn" onclick="openTab('settings', this)">
-      <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
-      <span>Settings</span>
-    </button>
-  </nav>
-
-  <style>
-    body.skin-matrix { --bg-main:#040a06 !important; --bg-surface:#09180e !important; --bg-elevated:#102618 !important; --accent:#00ff66 !important; }
-    body.skin-crimson { --bg-main:#0e0508 !important; --bg-surface:#1c0b11 !important; --bg-elevated:#2b111a !important; --accent:#ff2a5f !important; }
-    .quick-top-bar { display:flex; gap:8px; flex-wrap:wrap; margin-bottom:14px; }
-    .preset-chips-bar { display:flex; align-items:center; gap:8px; flex-wrap:wrap; margin-top:12px; padding-top:12px; border-top:1px dashed var(--border); }
-    .chip-btn { background:var(--bg-elevated); color:var(--text-primary); border:1px solid var(--border); padding:6px 12px; border-radius:8px; font-family:'JetBrains Mono',monospace; font-size:11px; font-weight:600; cursor:pointer; }
-    .node-combiner-card { background:var(--bg-surface); border:1px solid var(--border); border-radius:14px; padding:16px; margin-bottom:16px; }
-    .combiner-stage { display:flex; align-items:center; justify-content:space-between; gap:10px; min-height:200px; }
-    .combiner-sources { display:flex; flex-direction:column; gap:8px; width:36%; }
-    .combiner-item { display:flex; justify-content:space-between; align-items:center; padding:5px 10px; background:var(--bg-elevated); border:1px solid var(--border); border-radius:7px; font-family:'JetBrains Mono',monospace; font-size:11px; cursor:pointer; }
-    .combiner-item.off { opacity:0.35; }
-    .combiner-svg { flex:1; height:190px; min-width:90px; overflow:visible; }
-    .combiner-target { border:1.5px solid var(--accent); background:var(--bg-elevated); border-radius:12px; padding:14px 16px; min-width:165px; text-align:center; }
-    .anim-dash { fill:none; stroke-dasharray:6 5; animation:flowDash 0.55s linear infinite; }
-    @keyframes flowDash { to { stroke-dashoffset:-11; } }
-    @media (max-width:780px) {
-      .combiner-stage { flex-direction:column; align-items:stretch; }
-      .combiner-sources { width:100%; display:grid; grid-template-columns:repeat(2,1fr); }
-      .combiner-svg { height:65px; width:100%; }
-    }
-  </style>
-
-  <script>
-    if ('serviceWorker' in navigator) navigator.serviceWorker.register('sw.js').catch(() => {});
-
-    function showToast(msg) {
-      const box = document.getElementById('toastBox');
-      if (!box) return;
-      const t = document.createElement('div');
-      t.className = 'toast';
-      t.textContent = msg;
-      box.appendChild(t);
-      setTimeout(() => t.remove(), 3000);
-    }
-
-    const interfaces = [
-      { id: 'if1', name: 'Wi-Fi 6 Primary', sim: 140, var: 14, color: '#3b82f6', active: true, speed: 0 },
-      { id: 'if2', name: 'Ethernet / LAN', sim: 165, var: 12, color: '#8b5cf6', active: true, speed: 0 },
-      { id: 'if3', name: 'OnePlus 15 (Jio 5G)', sim: 125, var: 15, color: '#10b981', active: true, speed: 0 },
-      { id: 'if4', name: 'Nothing Phone 3 (Airtel)', sim: 48, var: 8, color: '#f59e0b', active: true, speed: 0 },
-      { id: 'if5', name: 'Galaxy S23 Ultra (Jio)', sim: 42, var: 7, color: '#ec4899', active: true, speed: 0 },
-      { id: 'if6', name: 'Xiaomi 17 (Vi)', sim: 24, var: 6, color: '#06b6d4', active: true, speed: 0 }
-    ];
-
-    let totalChunks = 120;
-    let chunkColors = [];
-    let currentChunkCursor = 0;
-    let completedChunks = 0;
-    let downloadedBytes = 0;
-    let collectedBlobs = [];
-    let currentDownloadUrl = '';
-    let currentFileName = '';
-    let engineState = 'idle';
-    let abortController = null;
-    let peakSpeed = 0, speedSum = 0, speedSamples = 0;
-    const historyPoints = Array.from({ length: 45 }, () => interfaces.map(() => 0));
-
-    // Inject Missing Top Bar, Quick Files & Video Node-Link Combiner
-    (function setupExtraUI() {
-      const dash = document.getElementById('view-dashboard');
-      const topBar = document.createElement('div');
-      topBar.className = 'quick-top-bar';
-      topBar.innerHTML = `
-        <button class="btn btn-primary" id="quickLiveBtn">⚡ Live Multi-Stream Test</button>
-        <button class="btn" id="quickDemoBtn">🔥 400+ Mbps Overdrive Demo</button>
-        <button class="btn" id="quickSkinBtn">🎨 Change Skin (5 Themes)</button>
-        <button class="btn" id="quickAddSimBtn">➕ Add Jio/Airtel/Vi Phone</button>
-        <button class="btn" id="forceSaveBtn">💾 Save Current File</button>
-      `;
-      dash.prepend(topBar);
-
-      const tc = document.querySelector('.task-creator');
-      const pb = document.createElement('div');
-      pb.className = 'preset-chips-bar';
-      pb.innerHTML = `
-        <span style="font-size:11px; color:var(--text-secondary);">Quick Files:</span>
-        <button class="chip-btn" data-url="https://speed.cloudflare.com/__down?bytes=10485760" data-name="Cloudflare_10MB_Turbo.bin">📦 10 MB Turbo Bin</button>
-        <button class="chip-btn" data-url="https://speed.cloudflare.com/__down?bytes=26214400" data-name="HyperFlux_25MB_Archive.zip">🗜️ 25 MB ZIP Archive</button>
-        <button class="chip-btn" data-url="https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerBlazes.mp4" data-name="Sample_HD_Video.mp4">🎬 HD Video (.MP4)</button>
-        <button class="chip-btn" id="winIsoPresetBtn">💿 Win10_22H2_5.7GB.iso (400 Mbps Mode)</button>
-      `;
-      tc.appendChild(pb);
-
-      const tg = document.querySelector('.telemetry-grid');
-      const cc = document.createElement('div');
-      cc.className = 'node-combiner-card';
-      cc.innerHTML = `
-        <div class="card-header">
-          <span>MULTI-DEVICE CHANNEL BONDING (LIVE NODE GRAPH)</span>
-          <span style="color:var(--accent)">TAP ANY DEVICE TO TOGGLE ON/OFF</span>
-        </div>
-        <div class="combiner-stage">
-          <div class="combiner-sources" id="combinerSourcesList"></div>
-          <svg class="combiner-svg" id="combinerSvgCanvas" preserveAspectRatio="none"></svg>
-          <div class="combiner-target">
-            <div style="font-size:10px; color:var(--text-secondary);">COMBINED SPEED</div>
-            <div style="font-family:'Space Grotesk',sans-serif; font-size:34px; font-weight:700; margin:4px 0;" id="combinerTotalNum">0.0</div>
-            <div style="font-size:11px; color:var(--accent);">Mbps BONDED</div>
-          </div>
-        </div>
-      `;
-      dash.insertBefore(cc, tg);
-    })();
-
-    function initChunkGrid() {
-      const sel = document.getElementById('chunkSelect');
-      totalChunks = sel ? parseInt(sel.value, 10) : 120;
-      chunkColors = new Array(totalChunks).fill(null);
-      const grid = document.getElementById('chunkMapGrid');
-      grid.innerHTML = '';
-      for (let i = 0; i < totalChunks; i++) {
-        const cell = document.createElement('div');
-        cell.className = 'chunk-block';
-        grid.appendChild(cell);
-      }
-    }
-
-    function paintChunk(idx, color) {
-      chunkColors[idx] = color;
-      const el = document.getElementById('chunkMapGrid').children[idx];
-      if (el) el.style.backgroundColor = color;
-    }
-
-    function setEngineStatus(state, label, color) {
-      engineState = state;
-      document.getElementById('engineStateText').textContent = label;
-      document.getElementById('statusDot').style.background = color;
-      const isWorking = state === 'downloading' || state === 'simulating';
-      document.getElementById('startBtn').disabled = isWorking;
-      document.getElementById('pauseBtn').disabled = !isWorking;
-      document.getElementById('resumeBtn').disabled = state !== 'paused';
-      document.getElementById('stopBtn').disabled = !(isWorking || state === 'paused');
-    }
-
-    function toggleIface(id) {
-      const target = interfaces.find(i => i.id === id);
-      if (target) {
-        target.active = !target.active;
-        if (!target.active) target.speed = 0;
-        showToast(`${target.name}: ${target.active ? 'ON' : 'OFF'}`);
-        updateDashboardUI();
-      }
-    }
-
-    function updateDashboardUI() {
-      const total = interfaces.reduce((acc, item) => acc + (item.active ? item.speed : 0), 0);
-      document.getElementById('totalSpeedVal').textContent = total.toFixed(1);
-      const combEl = document.getElementById('combinerTotalNum');
-      if (combEl) combEl.textContent = total.toFixed(1);
-
-      if (total > peakSpeed) peakSpeed = total;
-      if (total > 0.1) { speedSum += total; speedSamples++; }
-      const avg = speedSamples > 0 ? (speedSum / speedSamples).toFixed(1) : '0.0';
-
-      document.getElementById('peakSpeedVal').textContent = `${peakSpeed.toFixed(1)} Mbps`;
-      document.getElementById('avgSpeedVal').textContent = `${avg} Mbps`;
-
-      const maxSingle = Math.max(1, ...interfaces.map(i => i.active ? i.speed : 0));
-      const gain = total > 0 ? (total / maxSingle).toFixed(1) : '1.0';
-      document.getElementById('gainFactorVal').textContent = `${gain}x`;
-
-      const ratio = Math.min(1, total / 420);
-      document.getElementById('gaugeArc').style.strokeDashoffset = 534 - (ratio * 534);
-
-      const grid = document.getElementById('interfacesGrid');
-      grid.innerHTML = '';
-      interfaces.forEach(item => {
-        const share = total > 0 && item.active ? Math.round((item.speed / total) * 100) : 0;
-        const div = document.createElement('div');
-        div.className = `iface-card ${item.active ? '' : 'disabled'}`;
-        div.innerHTML = `
-          <div class="iface-top">
-            <div class="iface-title">
-              <span class="color-dot" style="background:${item.color}"></span>
-              <span>${item.name}</span>
-            </div>
-            <button class="toggle-switch" onclick="toggleIface('${item.id}')">${item.active ? 'ON' : 'OFF'}</button>
-          </div>
-          <div style="display:flex; justify-content:space-between; font-size:12px; font-family:'JetBrains Mono',monospace;">
-            <strong style="color:${item.color}">${item.active ? item.speed.toFixed(1) + ' Mbps' : 'Standby'}</strong>
-            <span style="color:var(--text-secondary)">${share}% Load</span>
-          </div>
-          <div class="progress-bar-wrap" style="height:4px; margin:2px 0 0;">
-            <div class="progress-bar-fill" style="width:${share}%; background:${item.color}"></div>
-          </div>
-        `;
-        grid.appendChild(div);
-      });
-
-      // Render Combiner Node List & SVG Lines
-      const listEl = document.getElementById('combinerSourcesList');
-      const svgEl = document.getElementById('combinerSvgCanvas');
-      if (listEl && svgEl) {
-        listEl.innerHTML = '';
-        interfaces.forEach(item => {
-          const d = document.createElement('div');
-          d.className = `combiner-item ${item.active ? '' : 'off'}`;
-          d.onclick = () => toggleIface(item.id);
-          d.innerHTML = `<span>${item.name}</span><strong style="color:${item.color}">${item.active ? item.speed.toFixed(1) + ' Mbps' : 'OFF'}</strong>`;
-          listEl.appendChild(d);
-        });
-        const rect = svgEl.getBoundingClientRect();
-        if (rect.width > 0) {
-          const w = rect.width, h = rect.height, count = interfaces.length, endX = w - 6, endY = h / 2;
-          let paths = '';
-          interfaces.forEach((item, idx) => {
-            const y = ((idx + 0.5) / count) * h;
-            const p = `M 4 ${y} C ${w * 0.45} ${y}, ${w * 0.65} ${endY}, ${endX} ${endY}`;
-            if (item.active && item.speed > 0.1) {
-              paths += `<path d="${p}" stroke="${item.color}" stroke-width="2.5" class="anim-dash" />`;
-              paths += `<circle cx="4" cy="${y}" r="3.5" fill="${item.color}" />`;
-            } else {
-              paths += `<path d="${p}" stroke="rgba(148,163,184,0.25)" stroke-width="1" fill="none" stroke-dasharray="3 3" />`;
-            }
-          });
-          paths += `<circle cx="${endX}" cy="${endY}" r="5" fill="var(--accent)" />`;
-          svgEl.innerHTML = paths;
-        }
-      }
-    }
-
-    function drawChart() {
-      const canvas = document.getElementById('chartCanvas');
-      const ctx = canvas.getContext('2d');
-      const w = canvas.width, h = canvas.height;
-      ctx.clearRect(0, 0, w, h);
-      let maxVal = 50;
-      historyPoints.forEach(pt => {
-        const s = pt.reduce((a, b) => a + b, 0);
-        if (s > maxVal) maxVal = s * 1.15;
-      });
-      for (let layer = interfaces.length - 1; layer >= 0; layer--) {
-        ctx.beginPath();
-        for (let t = 0; t < historyPoints.length; t++) {
-          const x = (t / (historyPoints.length - 1)) * w;
-          let sum = 0;
-          for (let k = 0; k <= layer; k++) sum += historyPoints[t][k] || 0;
-          const y = h - (sum / maxVal) * (h - 14);
-          if (t === 0) ctx.moveTo(x, y); else ctx.lineTo(x, y);
-        }
-        ctx.lineTo(w, h); ctx.lineTo(0, h); ctx.closePath();
-        ctx.fillStyle = interfaces[layer].color + '26'; ctx.fill();
-        ctx.strokeStyle = interfaces[layer].color; ctx.lineWidth = 1.8; ctx.stroke();
-      }
-    }
-
-    async function executeDownl
+          <div style="display:flex; justify-content:space-between; align-items:center;"><div style="font-weight:600; font-size:13.5px;">Theme Switcher</div

@@ -1,775 +1,734 @@
-# plexo-app
 <!DOCTYPE html>
 <html lang="hi">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-  <meta name="theme-color" content="#07090e" />
+  <meta name="theme-color" content="#090d16" />
   <link rel="manifest" href="manifest.json" />
-  <title>HYPERFLUX — Multi-Phone Fusion Downloader</title>
-  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=JetBrains+Mono:wght@400;600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
-  <!-- Real WebRTC Peer-to-Peer Backend Library -->
+  <title>HyperFlux Pro — Network Fusion & Download Manager</title>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=JetBrains+Mono:wght@400;500;600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
   <script src="https://unpkg.com/peerjs@1.5.4/dist/peerjs.min.js"></script>
   <style>
     :root {
-      --bg-main: #07090e;
-      --bg-card: rgba(16, 21, 33, 0.82);
-      --bg-card-hover: rgba(24, 31, 48, 0.95);
-      --border: rgba(255, 255, 255, 0.09);
-      --border-glow: rgba(0, 240, 255, 0.35);
-      --text-main: #f1f5f9;
-      --text-muted: #8b9bb4;
-      --accent: #00f0ff;
-      --accent-2: #7000ff;
-      --success: #00ff9d;
+      --bg-main: #090d16;
+      --bg-surface: #111726;
+      --bg-elevated: #182032;
+      --border: rgba(255, 255, 255, 0.08);
+      --border-focus: #3b82f6;
+      --text-primary: #f8fafc;
+      --text-secondary: #94a3b8;
+      --accent: #3b82f6;
+      --accent-glow: rgba(59, 130, 246, 0.35);
+      --success: #10b981;
+      --warning: #f59e0b;
+      --danger: #ef4444;
     }
 
-    body.skin-matrix {
-      --bg-main: #040a06;
-      --bg-card: rgba(8, 22, 12, 0.85);
-      --border-glow: rgba(0, 255, 128, 0.4);
-      --accent: #00ff66;
-      --accent-2: #00b347;
-    }
-
-    body.skin-crimson {
-      --bg-main: #0d0608;
-      --bg-card: rgba(28, 12, 16, 0.85);
-      --border-glow: rgba(255, 42, 95, 0.45);
-      --accent: #ff2a5f;
-      --accent-2: #ff7b00;
-    }
-
-    body.skin-frost {
-      --bg-main: #eef2f6;
-      --bg-card: rgba(255, 255, 255, 0.94);
-      --bg-card-hover: #ffffff;
-      --border: rgba(0, 0, 0, 0.09);
-      --border-glow: rgba(37, 99, 235, 0.35);
-      --text-main: #0f172a;
-      --text-muted: #64748b;
+    body.theme-light {
+      --bg-main: #f1f5f9;
+      --bg-surface: #ffffff;
+      --bg-elevated: #f8fafc;
+      --border: rgba(15, 23, 42, 0.09);
+      --text-primary: #0f172a;
+      --text-secondary: #64748b;
       --accent: #2563eb;
-      --accent-2: #7c3aed;
+      --accent-glow: rgba(37, 99, 235, 0.2);
     }
 
-    * { box-sizing: border-box; margin: 0; padding: 0; user-select: none; -webkit-tap-highlight-color: transparent; }
+    body.theme-cyber {
+      --bg-main: #06080e;
+      --bg-surface: #0d121f;
+      --bg-elevated: #141c2e;
+      --accent: #00f0ff;
+      --accent-glow: rgba(0, 240, 255, 0.3);
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      user-select: none;
+      -webkit-tap-highlight-color: transparent;
+    }
 
     body {
       background-color: var(--bg-main);
-      background-image: 
-        radial-gradient(circle at 15% 15%, rgba(112, 0, 255, 0.14) 0%, transparent 40%),
-        radial-gradient(circle at 85% 80%, rgba(0, 240, 255, 0.12) 0%, transparent 40%);
-      color: var(--text-main);
+      color: var(--text-primary);
       font-family: 'Inter', sans-serif;
       min-height: 100vh;
-      padding-bottom: 90px;
-      transition: background 0.3s ease, color 0.3s ease;
+      padding-bottom: 88px;
+      transition: background 0.25s, color 0.25s;
     }
 
-    .app-shell { max-width: 1240px; margin: 0 auto; padding: 12px; }
-
-    .topbar {
-      display: flex; align-items: center; justify-content: space-between;
-      padding: 14px 16px; background: var(--bg-card); backdrop-filter: blur(16px);
-      border: 1px solid var(--border); border-radius: 16px; margin-bottom: 14px;
-      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.25); flex-wrap: wrap; gap: 10px;
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 14px;
     }
 
-    .brand { display: flex; align-items: center; gap: 12px; }
-
-    .brand-logo {
-      width: 38px; height: 38px; border-radius: 10px;
-      background: linear-gradient(135deg, var(--accent), var(--accent-2));
-      display: flex; align-items: center; justify-content: center;
-      font-family: 'Space Grotesk', sans-serif; font-weight: 700; font-size: 18px; color: #fff;
-      box-shadow: 0 0 16px var(--border-glow);
+    /* Toast Notification */
+    .toast-box {
+      position: fixed;
+      top: 16px;
+      right: 16px;
+      z-index: 2000;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      max-width: 340px;
     }
 
-    .brand-title { font-family: 'Space Grotesk', sans-serif; font-size: 18px; font-weight: 700; letter-spacing: 0.05em; }
-    .brand-sub { font-size: 10.5px; color: var(--success); font-family: 'JetBrains Mono', monospace; }
-
-    .top-actions { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
-
-    .pill-btn {
-      background: rgba(255, 255, 255, 0.06); color: var(--text-main);
-      border: 1px solid var(--border); padding: 8px 12px; border-radius: 10px;
-      font-family: 'JetBrains Mono', monospace; font-size: 11px; font-weight: 600;
-      cursor: pointer; transition: all 0.2s ease;
+    .toast {
+      background: var(--bg-elevated);
+      color: var(--text-primary);
+      border: 1px solid var(--border);
+      border-left: 4px solid var(--accent);
+      padding: 12px 16px;
+      border-radius: 10px;
+      font-size: 12.5px;
+      font-weight: 500;
+      box-shadow: 0 10px 25px rgba(0,0,0,0.4);
+      animation: slideIn 0.25s ease;
     }
 
-    .pill-btn:hover { border-color: var(--accent); box-shadow: 0 0 12px var(--border-glow); }
-    .pill-btn.active-mode { background: linear-gradient(135deg, var(--accent), var(--accent-2)); color: #fff; border-color: transparent; }
-
-    .command-bar {
-      display: flex; flex-direction: column; gap: 10px;
-      background: var(--bg-card); border: 1px solid var(--border);
-      padding: 12px; border-radius: 14px; margin-bottom: 14px;
+    @keyframes slideIn {
+      from { transform: translateX(100%); opacity: 0; }
+      to { transform: translateX(0); opacity: 1; }
     }
 
-    .input-row { display: flex; gap: 8px; flex-wrap: wrap; }
-
-    .url-box {
-      flex: 1; min-width: 200px; background: rgba(0, 0, 0, 0.3);
-      border: 1px solid var(--border); color: var(--text-main);
-      padding: 11px 14px; border-radius: 10px;
-      font-family: 'JetBrains Mono', monospace; font-size: 12px; outline: none;
-    }
-    body.skin-frost .url-box { background: #f8fafc; }
-    .url-box:focus { border-color: var(--accent); }
-
-    .launch-btn {
-      background: linear-gradient(135deg, var(--accent), var(--accent-2));
-      color: #fff; border: none; padding: 11px 18px; border-radius: 10px;
-      font-family: 'Space Grotesk', sans-serif; font-weight: 700; font-size: 13px;
-      cursor: pointer; box-shadow: 0 4px 15px var(--border-glow);
+    /* Professional Header */
+    .app-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      background: var(--bg-surface);
+      border: 1px solid var(--border);
+      padding: 14px 18px;
+      border-radius: 14px;
+      margin-bottom: 16px;
     }
 
-    .preset-row {
-      display: flex; align-items: center; gap: 8px; flex-wrap: wrap;
-      font-size: 11px; color: var(--text-muted); font-family: 'JetBrains Mono', monospace;
+    .brand-group {
+      display: flex;
+      align-items: center;
+      gap: 12px;
     }
 
-    .preset-chip {
-      background: rgba(255, 255, 255, 0.05); border: 1px solid var(--border);
-      color: var(--text-main); padding: 4px 10px; border-radius: 6px;
-      cursor: pointer; font-size: 11px;
-    }
-    .preset-chip:hover { border-color: var(--accent); color: var(--accent); }
-
-    .tab-view { display: none; flex-direction: column; gap: 14px; }
-    .tab-view.active { display: flex; }
-
-    .hero-grid { display: grid; grid-template-columns: 1fr 1.25fr; gap: 14px; }
-
-    .glass-card {
-      background: var(--bg-card); backdrop-filter: blur(16px);
-      border: 1px solid var(--border); border-radius: 18px; padding: 16px;
-      position: relative; overflow: hidden;
+    .brand-icon {
+      width: 36px;
+      height: 36px;
+      border-radius: 9px;
+      background: var(--accent);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #fff;
+      box-shadow: 0 4px 14px var(--accent-glow);
     }
 
-    .card-label {
-      font-family: 'JetBrains Mono', monospace; font-size: 11px;
-      text-transform: uppercase; letter-spacing: 0.08em; color: var(--text-muted);
-      margin-bottom: 12px; display: flex; justify-content: space-between; align-items: center;
+    .brand-name {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 17px;
+      font-weight: 700;
+      letter-spacing: 0.02em;
     }
 
-    .reactor-wrap { display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 6px 0; }
-    .reactor-ring { position: relative; width: 200px; height: 200px; display: flex; align-items: center; justify-content: center; }
-    .reactor-svg { position: absolute; top: 0; left: 0; width: 100%; height: 100%; transform: rotate(-90deg); }
-    .ring-bg { fill: none; stroke: rgba(255, 255, 255, 0.07); stroke-width: 12; }
-    body.skin-frost .ring-bg { stroke: rgba(0, 0, 0, 0.08); }
-    .ring-meter {
-      fill: none; stroke: var(--accent); stroke-width: 12; stroke-linecap: round;
-      stroke-dasharray: 565; stroke-dashoffset: 565;
-      filter: drop-shadow(0 0 8px var(--accent)); transition: stroke-dashoffset 0.3s ease;
+    .status-pill {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 11px;
+      padding: 6px 12px;
+      border-radius: 20px;
+      background: rgba(16, 185, 129, 0.12);
+      color: var(--success);
+      border: 1px solid rgba(16, 185, 129, 0.25);
+      font-weight: 600;
     }
 
-    .reactor-center { text-align: center; z-index: 2; }
-    .reactor-speed { font-family: 'Space Grotesk', sans-serif; font-size: 42px; font-weight: 700; line-height: 1; }
-    .reactor-unit { font-family: 'JetBrains Mono', monospace; font-size: 11px; color: var(--accent); margin-top: 4px; font-weight: 600; }
-
-    .reactor-substats {
-      display: flex; gap: 16px; margin-top: 14px; padding-top: 12px;
-      border-top: 1px solid var(--border); width: 100%; justify-content: center;
-      font-family: 'JetBrains Mono', monospace; font-size: 11px;
+    .status-dot {
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      background: var(--success);
     }
 
-    #waveCanvas { width: 100%; height: 185px; display: block; }
-
-    .nodes-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(230px, 1fr)); gap: 10px; }
-    .node-card {
-      background: var(--bg-card); border: 1px solid var(--border);
-      border-radius: 14px; padding: 13px; cursor: pointer; transition: all 0.2s ease;
-    }
-    .node-card.inactive { opacity: 0.38; filter: grayscale(0.8); }
-    .node-top { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; }
-    .node-name { display: flex; align-items: center; gap: 8px; font-weight: 600; font-size: 12.5px; }
-    .node-badge { width: 9px; height: 9px; border-radius: 50%; }
-    .node-mbps { font-family: 'JetBrains Mono', monospace; font-size: 13.5px; font-weight: 700; }
-    .node-progress-bg { width: 100%; height: 5px; background: rgba(255, 255, 255, 0.07); border-radius: 4px; overflow: hidden; }
-    .node-progress-fill { height: 100%; border-radius: 4px; transition: width 0.3s ease; }
-
-    .assembler-header { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 8px; margin-bottom: 10px; }
-    .file-title { font-family: 'JetBrains Mono', monospace; font-size: 13px; font-weight: 700; color: var(--accent); word-break: break-all; }
-    .matrix-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(13px, 1fr)); gap: 4px; margin-top: 12px; }
-    .hex-cell { height: 13px; border-radius: 3px; background: rgba(255, 255, 255, 0.06); transition: background 0.15s ease; }
-
-    .swarm-box { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 14px; }
-    .room-code-display {
-      font-family: 'Space Grotesk', sans-serif; font-size: 38px; font-weight: 700;
-      letter-spacing: 0.22em; color: var(--accent); text-align: center;
-      padding: 16px; background: rgba(0, 0, 0, 0.35);
-      border: 1px dashed var(--accent); border-radius: 14px; margin: 12px 0;
+    /* Task Creation Bar */
+    .task-creator {
+      background: var(--bg-surface);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 16px;
+      margin-bottom: 16px;
     }
 
-    .status-log {
-      font-family: 'JetBrains Mono', monospace; font-size: 11.5px;
-      padding: 10px; border-radius: 8px; background: rgba(0,0,0,0.3);
-      color: var(--success); margin-top: 10px; line-height: 1.5;
+    .url-row {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
     }
 
-    .bottom-dock {
-      position: fixed; bottom: 12px; left: 50%; transform: translateX(-50%);
-      background: rgba(12, 16, 26, 0.94); backdrop-filter: blur(20px);
-      border: 1px solid rgba(255, 255, 255, 0.15); border-radius: 20px;
-      display: flex; gap: 6px; padding: 6px; z-index: 999;
-      box-shadow: 0 12px 35px rgba(0, 0, 0, 0.55);
+    .input-wrapper {
+      flex: 1;
+      min-width: 220px;
+      position: relative;
+      display: flex;
+      align-items: center;
     }
 
-    .dock-item {
-      background: transparent; border: none; color: #94a3b8;
-      padding: 10px 15px; border-radius: 14px; font-family: 'Inter', sans-serif;
-      font-size: 12px; font-weight: 600; cursor: pointer;
-      display: flex; align-items: center; gap: 6px; transition: all 0.2s ease;
+    .url-input {
+      width: 100%;
+      background: var(--bg-elevated);
+      border: 1px solid var(--border);
+      color: var(--text-primary);
+      padding: 12px 38px 12px 14px;
+      border-radius: 10px;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 12.5px;
+      outline: none;
+      transition: border 0.2s;
     }
-    .dock-item.active { background: linear-gradient(135deg, var(--accent), var(--accent-2)); color: #fff; }
+
+    .url-input:focus {
+      border-color: var(--accent);
+    }
+
+    .clear-input-btn {
+      position: absolute;
+      right: 10px;
+      background: none;
+      border: none;
+      color: var(--text-secondary);
+      cursor: pointer;
+      padding: 4px;
+      display: flex;
+    }
+
+    /* Transport Control Toolbar */
+    .controls-toolbar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-top: 14px;
+      padding-top: 14px;
+      border-top: 1px solid var(--border);
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+
+    .btn-group {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
+      padding: 9px 15px;
+      border-radius: 9px;
+      font-family: 'Inter', sans-serif;
+      font-size: 12.5px;
+      font-weight: 600;
+      cursor: pointer;
+      border: 1px solid var(--border);
+      background: var(--bg-elevated);
+      color: var(--text-primary);
+      transition: all 0.15s ease;
+    }
+
+    .btn:hover:not(:disabled) {
+      border-color: var(--accent);
+    }
+
+    .btn:disabled {
+      opacity: 0.4;
+      cursor: not-allowed;
+    }
+
+    .btn-primary {
+      background: var(--accent);
+      color: #fff;
+      border-color: var(--accent);
+      box-shadow: 0 4px 12px var(--accent-glow);
+    }
+
+    .btn-warning {
+      background: rgba(245, 158, 11, 0.15);
+      color: var(--warning);
+      border-color: rgba(245, 158, 11, 0.35);
+    }
+
+    .btn-danger {
+      background: rgba(239, 68, 68, 0.15);
+      color: var(--danger);
+      border-color: rgba(239, 68, 68, 0.35);
+    }
+
+    .btn-success {
+      background: rgba(16, 185, 129, 0.15);
+      color: var(--success);
+      border-color: rgba(16, 185, 129, 0.35);
+    }
+
+    .thread-selector {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 12px;
+      color: var(--text-secondary);
+      font-family: 'JetBrains Mono', monospace;
+    }
+
+    .select-box {
+      background: var(--bg-elevated);
+      color: var(--text-primary);
+      border: 1px solid var(--border);
+      padding: 6px 10px;
+      border-radius: 7px;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 12px;
+      outline: none;
+    }
+
+    /* Views */
+    .tab-section { display: none; flex-direction: column; gap: 16px; }
+    .tab-section.active { display: flex; }
+
+    /* Telemetry Grid */
+    .telemetry-grid {
+      display: grid;
+      grid-template-columns: 1fr 1.35fr;
+      gap: 16px;
+    }
+
+    .card {
+      background: var(--bg-surface);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 18px;
+    }
+
+    .card-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 14px;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 11px;
+      color: var(--text-secondary);
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+    }
+
+    /* Speedometer Gauge */
+    .gauge-container {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .gauge-ring {
+      position: relative;
+      width: 190px;
+      height: 190px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .gauge-svg {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      transform: rotate(-90deg);
+    }
+
+    .gauge-track {
+      fill: none;
+      stroke: var(--bg-elevated);
+      stroke-width: 12;
+    }
+
+    .gauge-fill {
+      fill: none;
+      stroke: var(--accent);
+      stroke-width: 12;
+      stroke-linecap: round;
+      stroke-dasharray: 534;
+      stroke-dashoffset: 534;
+      transition: stroke-dashoffset 0.3s ease;
+    }
+
+    .gauge-readout {
+      text-align: center;
+      z-index: 2;
+    }
+
+    .speed-big {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 40px;
+      font-weight: 700;
+      line-height: 1;
+    }
+
+    .speed-unit {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 11px;
+      color: var(--text-secondary);
+      margin-top: 4px;
+    }
+
+    .metrics-row {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      width: 100%;
+      margin-top: 16px;
+      padding-top: 12px;
+      border-top: 1px solid var(--border);
+      text-align: center;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 11px;
+    }
+
+    .metric-val {
+      font-size: 13.5px;
+      font-weight: 700;
+      color: var(--text-primary);
+      margin-top: 2px;
+    }
+
+    #chartCanvas {
+      width: 100%;
+      height: 185px;
+      display: block;
+    }
+
+    /* Active File Job Card */
+    .job-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 12px;
+      margin-bottom: 10px;
+      flex-wrap: wrap;
+    }
+
+    .job-title {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 13.5px;
+      font-weight: 600;
+      word-break: break-all;
+    }
+
+    .job-sub {
+      font-size: 12px;
+      color: var(--text-secondary);
+      margin-top: 4px;
+      font-family: 'JetBrains Mono', monospace;
+    }
+
+    .progress-bar-wrap {
+      width: 100%;
+      height: 8px;
+      background: var(--bg-elevated);
+      border-radius: 4px;
+      overflow: hidden;
+      margin: 10px 0;
+    }
+
+    .progress-bar-fill {
+      height: 100%;
+      width: 0%;
+      background: var(--accent);
+      transition: width 0.2s linear;
+    }
+
+    .chunk-map {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(12px, 1fr));
+      gap: 3px;
+      margin-top: 10px;
+    }
+
+    .chunk-block {
+      height: 12px;
+      border-radius: 2px;
+      background: var(--bg-elevated);
+      transition: background 0.15s ease;
+    }
+
+    /* Network Interfaces Grid */
+    .interfaces-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+      gap: 12px;
+    }
+
+    .iface-card {
+      background: var(--bg-surface);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 14px;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      transition: all 0.2s;
+    }
+
+    .iface-card.disabled {
+      opacity: 0.45;
+    }
+
+    .iface-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .iface-title {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 13px;
+      font-weight: 600;
+    }
+
+    .color-dot {
+      width: 9px;
+      height: 9px;
+      border-radius: 50%;
+    }
+
+    .toggle-switch {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 10.5px;
+      padding: 3px 8px;
+      border-radius: 6px;
+      border: 1px solid var(--border);
+      background: var(--bg-elevated);
+      color: var(--text-primary);
+      cursor: pointer;
+    }
+
+    /* Bottom Navigation Bar */
+    .bottom-nav {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      background: var(--bg-surface);
+      border-top: 1px solid var(--border);
+      display: flex;
+      justify-content: space-around;
+      padding: 8px 12px;
+      z-index: 1000;
+    }
+
+    .nav-btn {
+      background: none;
+      border: none;
+      color: var(--text-secondary);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 4px;
+      font-family: 'Inter', sans-serif;
+      font-size: 11px;
+      font-weight: 600;
+      cursor: pointer;
+      padding: 6px 16px;
+      border-radius: 10px;
+      transition: all 0.2s;
+    }
+
+    .nav-btn.active {
+      color: var(--accent);
+      background: rgba(59, 130, 246, 0.1);
+    }
+
+    .nav-btn svg {
+      width: 20px;
+      height: 20px;
+      stroke: currentColor;
+      stroke-width: 2;
+      fill: none;
+    }
+
+    .icon-sm {
+      width: 15px;
+      height: 15px;
+      stroke: currentColor;
+      stroke-width: 2.2;
+      fill: none;
+    }
 
     @media (max-width: 820px) {
-      .hero-grid { grid-template-columns: 1fr; }
-      .bottom-dock { width: 95%; justify-content: space-around; }
-      .dock-item { padding: 10px 8px; font-size: 11px; }
+      .telemetry-grid { grid-template-columns: 1fr; }
     }
   </style>
 </head>
 <body>
 
-  <div class="app-shell">
-    <header class="topbar">
-      <div class="brand">
-        <div class="brand-logo">HF</div>
+  <!-- Toast Container -->
+  <div class="toast-box" id="toastBox"></div>
+
+  <div class="container">
+    <!-- Top Bar -->
+    <header class="app-header">
+      <div class="brand-group">
+        <div class="brand-icon">
+          <svg class="icon-sm" style="width:20px;height:20px;" viewBox="0 0 24 24"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg>
+        </div>
         <div>
-          <div class="brand-title">HYPERFLUX</div>
-          <div class="brand-sub" id="webrtcStatus">&#9679; LIVE ENGINE READY</div>
+          <div class="brand-name">HYPERFLUX PRO</div>
+          <div style="font-size:11px; color:var(--text-secondary); font-family:'JetBrains Mono',monospace;">Multi-Interface Download Manager</div>
         </div>
       </div>
 
-      <div class="top-actions">
-        <button class="pill-btn active-mode" id="installAppBtn" style="display:none;">&#128242; Install App</button>
-        <button class="pill-btn active-mode" id="realBurstBtn">&#9889; Live Multi-Stream</button>
-        <button class="pill-btn" id="simModeBtn">&#128293; 400+ Mbps Demo</button>
-        <button class="pill-btn" id="skinCycleBtn">&#127912; Theme</button>
+      <div style="display:flex; align-items:center; gap:10px;">
+        <button class="btn btn-primary" id="pwaInstallBtn" style="display:none;">Install App</button>
+        <div class="status-pill" id="engineStatusPill">
+          <span class="status-dot" id="statusDot"></span>
+          <span id="engineStateText">IDLE / READY</span>
+        </div>
       </div>
     </header>
 
-    <!-- TAB 1: TURBO HUB -->
-    <section class="tab-view active" id="tab-hub">
-      <div class="command-bar">
-        <div class="input-row">
-          <input type="text" id="urlInput" class="url-box" placeholder="Paste any direct file URL or choose a quick test file below..." />
-          <button class="launch-btn" id="startDownloadBtn">&#128640; START FUSION DOWNLOAD</button>
+    <!-- TAB 1: DASHBOARD & DOWNLOAD CONTROLS -->
+    <section class="tab-section active" id="view-dashboard">
+      <!-- URL & Transport Controller -->
+      <div class="task-creator">
+        <div class="url-row">
+          <div class="input-wrapper">
+            <input type="text" id="targetUrlInput" class="url-input" placeholder="Paste direct download URL (HTTP/HTTPS)..." />
+            <button class="clear-input-btn" id="clearUrlBtn" title="Clear URL">
+              <svg class="icon-sm" viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+            </button>
+          </div>
+          <button class="btn btn-primary" id="startBtn">
+            <svg class="icon-sm" viewBox="0 0 24 24"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+            <span>Start Download</span>
+          </button>
         </div>
-        <div class="preset-row">
-          <span>Quick Real Files:</span>
-          <button class="preset-chip" onclick="loadPreset('https://speed.cloudflare.com/__down?bytes=10485760', 'Cloudflare_10MB_Package.bin', 10)">10 MB Turbo Bin</button>
-          <button class="preset-chip" onclick="loadPreset('https://speed.cloudflare.com/__down?bytes=26214400', 'HyperFlux_25MB_Archive.zip', 25)">25 MB Archive</button>
-          <button class="preset-chip" onclick="loadPreset('https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerBlazes.mp4', 'Sample_HD_Video.mp4', 15)">HD Video (.MP4)</button>
+
+        <!-- Professional Transport Buttons: Pause, Resume, Stop, Reset -->
+        <div class="controls-toolbar">
+          <div class="btn-group">
+            <button class="btn btn-warning" id="pauseBtn" disabled>
+              <svg class="icon-sm" viewBox="0 0 24 24"><rect x="6" y="4" width="4" height="16"/><rect x="14" y="4" width="4" height="16"/></svg>
+              <span>Pause</span>
+            </button>
+            <button class="btn btn-success" id="resumeBtn" disabled>
+              <svg class="icon-sm" viewBox="0 0 24 24"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+              <span>Resume</span>
+            </button>
+            <button class="btn btn-danger" id="stopBtn" disabled>
+              <svg class="icon-sm" viewBox="0 0 24 24"><rect x="4" y="4" width="16" height="16" rx="2"/></svg>
+              <span>Stop / Cancel</span>
+            </button>
+            <button class="btn" id="resetBtn">
+              <svg class="icon-sm" viewBox="0 0 24 24"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/></svg>
+              <span>Reset</span>
+            </button>
+          </div>
+
+          <div class="thread-selector">
+            <span>STREAMS / CHUNKS:</span>
+            <select class="select-box" id="chunkSelect">
+              <option value="80">80 Chunks (Standard)</option>
+              <option value="120" selected>120 Chunks (Turbo)</option>
+              <option value="200">200 Chunks (Extreme)</option>
+            </select>
+          </div>
         </div>
       </div>
 
-      <div class="hero-grid">
-        <div class="glass-card">
-          <div class="card-label">
-            <span>FUSION REACTOR CORE</span>
-            <span id="activeNodesBadge" style="color: var(--accent);">6 CHANNELS LOCKED</span>
+      <!-- Speedometer + Live Graph -->
+      <div class="telemetry-grid">
+        <div class="card">
+          <div class="card-header">
+            <span>COMBINED BANDWIDTH</span>
+            <span id="activeChannelsLabel">6 INTERFACES ACTIVE</span>
           </div>
-          <div class="reactor-wrap">
-            <div class="reactor-ring">
-              <svg class="reactor-svg" viewBox="0 0 200 200">
-                <circle class="ring-bg" cx="100" cy="100" r="90"></circle>
-                <circle class="ring-meter" id="ringMeter" cx="100" cy="100" r="90"></circle>
+          <div class="gauge-container">
+            <div class="gauge-ring">
+              <svg class="gauge-svg" viewBox="0 0 200 200">
+                <circle class="gauge-track" cx="100" cy="100" r="85"></circle>
+                <circle class="gauge-fill" id="gaugeArc" cx="100" cy="100" r="85"></circle>
               </svg>
-              <div class="reactor-center">
-                <div class="reactor-speed" id="totalSpeedDisplay">0.0</div>
-                <div class="reactor-unit">Mbps COMBINED</div>
+              <div class="gauge-readout">
+                <div class="speed-big" id="totalSpeedVal">0.0</div>
+                <div class="speed-unit">Mbps TOTAL</div>
               </div>
             </div>
-            <div class="reactor-substats">
-              <div>PEAK: <strong id="peakVal" style="color:var(--accent)">0</strong> Mbps</div>
-              <div>AVG: <strong id="avgVal">0</strong> Mbps</div>
-              <div>BOOST: <strong id="gainVal" style="color:#00ff9d">1.0x</strong></div>
+
+            <div class="metrics-row">
+              <div>
+                <div>PEAK SPEED</div>
+                <div class="metric-val" id="peakSpeedVal">0.0 Mbps</div>
+              </div>
+              <div>
+                <div>AVERAGE</div>
+                <div class="metric-val" id="avgSpeedVal">0.0 Mbps</div>
+              </div>
+              <div>
+                <div>MULTIPLIER</div>
+                <div class="metric-val" id="gainFactorVal" style="color:var(--success)">1.0x</div>
+              </div>
             </div>
           </div>
         </div>
 
-        <div class="glass-card">
-          <div class="card-label">
-            <span>REAL-TIME SPECTRUM TELEMETRY</span>
-            <span id="telemetryState">PARALLEL STREAMS</span>
+        <div class="card">
+          <div class="card-header">
+            <span>REAL-TIME INTERFACE STACK</span>
+            <span id="graphStatusLabel">LIVE TELEMETRY</span>
           </div>
-          <canvas id="waveCanvas" width="540" height="185"></canvas>
-          <div style="display:flex; justify-content:space-between; font-size:10px; color:var(--text-muted); margin-top:8px; font-family:'JetBrains Mono',monospace;">
-            <span>-30s</span><span>-20s</span><span>-10s</span><span>LIVE NOW</span>
+          <canvas id="chartCanvas" width="54height="185"></canvas>
+          <div style="display:flex; justify-content:space-between; font-size:10px; color:var(--text-secondary); margin-top:8px; font-family:'JetBrains Mono',monospace;">
+            <span>-30s</span><span>-20s</span><span>-10s</span><span>0s (NOW)</span>
           </div>
         </div>
       </div>
 
-      <div class="glass-card">
-        <div class="assembler-header">
+      <!-- AJob Progress & Chunk Segmentation Map -->
+      <div class="card">
+        <div class="job-header">
           <div>
-            <div class="file-title" id="activeFileName">Ready — Click "START FUSION DOWNLOAD"</div>
-            <div style="font-size:11.5px; color:var(--text-muted); margin-top:2px;" id="progressStats">0.00 MB Merged • Select a file or paste URL</div>
+            <div class="job-title" id="jobFileName">No Active Download Task</div>
+            <div class="job-sub" id="jobSubStats">0.00 MB / 0.00 MB • Status: Ready</div>
           </div>
-          <div style="font-family:'Space Grotesk',sans-serif; font-size:22px; font-weight:700; color:var(--accent);" id="pctDisplay">0%</div>
+          <div style="font-family:'Space Grotesk',sans-serif; font-size:24px; font-weight:700; color:var(--accent);" id="jobPercent">0%</div>
         </div>
-        <div class="node-progress-bg" style="height:7px;">
-          <div class="node-progress-fill" id="mainProgressBar" style="width:0%; background:linear-gradient(90deg, var(--accent), var(--accent-2));"></div>
+
+        <div class="progress-bar-wrap">
+          <div class="progress-bar-fill" id="jobProgressBar"></div>
         </div>
-        <div class="matrix-grid" id="matrixGrid"></div>
+
+        <div class="chunk-map" id="chunkMapGrid"></div>
       </div>
 
-      <div class="nodes-grid" id="nodesContainer"></div>
+      <!-- Network Interfaces Manager -->
+      <div class="card">
+        <div class="card-header">
+          <span>NETWORK INTERFACES &amp; WORKER STREAMS</span>
+          <button class="toggle-switch" id="addInterfaceBtn">+ Add Interface</button>
+        </div>
+        <div class="interfaces-grid" id="interfacesGrid"></div>
+      </div>
     </section>
 
-    <!-- TAB 2: REAL WEBRTC SWARM LINK -->
-    <section class="tab-view" id="tab-swarm">
-      <div class="swarm-box">
-        <div class="glass-card">
-          <div class="card-label"><span>HOST ROOM (THIS PHONE)</span><span>REAL WEBRTC P2P</span></div>
-          <p style="font-size:13px; color:var(--text-muted); line-height:1.5;">
-            Apne doosre phone mein yeh website kholein, <strong>Swarm Link</strong> tab mein jayein aur neeche diya gaya 4-digit code daal kar connect karein:
+    <!-- TAB 2: SWARM P2P MULTI-DEVICE LINK -->
+    <section class="tab-section" id="view-swarm">
+      <div class="telemetry-grid">
+        <div class="card">
+          <div class="card-header"><span>HOST SWARM ROOM</span><span>WEBRTC P2P</span></div>
+          <p style="font-size:13px; color:var(--text-secondary); line-height:1.5;">
+            अपने दूसरे फोन में यह ऐप खोलकर नीचे दिया गया 4-अंकों का <strong>Room Code</strong> डालें ताकि दोनों फोन्स का नेटवर्क आपस में जुड़ जाए:
           </p>
-          <div class="room-code-display" id="mySwarmCode">....</div>
-          <div class="status-log" id="hostLog">Initializing live WebRTC Room Server...</div>
-        </div>
-
-        <div class="glass-card">
-          <div class="card-label"><span>JOIN ANOTHER PHONE'S ROOM</span><span>SHARE BANDWIDTH</span></div>
-          <p style="font-size:13px; color:var(--text-muted); line-height:1.5; margin-bottom:12px;">
-            Doosre phone par dikh raha 4-digit Room Code yahan daalein. Aapke is phone ki live internet speed us phone ke meter mein jud jayegi:
-          </p>
-          <input type="number" id="joinCodeInput" class="url-box" style="width:100%; margin-bottom:12px; text-align:center; font-size:20px; letter-spacing:0.15em;" placeholder="ENTER 4-DIGIT CODE" />
-          <button class="launch-btn" style="width:100%;" id="connectPeerBtn">&#128279; CONNECT &amp; SEND LIVE SPEED</button>
-          <div class="status-log" id="clientLog">Waiting for room code...</div>
-        </div>
-      </div>
-    </section>
-
-    <!-- TAB 3: SPEED LAB -->
-    <section class="tab-view" id="tab-speedlab">
-      <div class="glass-card" style="text-align:center; padding:30px 18px;">
-        <div class="card-label" style="justify-content:center;"><span>CLOUDFLARE EDGE BENCHMARK</span></div>
-        <div style="font-family:'Space Grotesk',sans-serif; font-size:50px; font-weight:700; color:var(--accent);" id="benchMbps">0.0 Mbps</div>
-        <div style="font-family:'JetBrains Mono',monospace; font-size:12px; color:var(--text-muted); margin:8px 0 22px;" id="benchPing">PING: -- ms | JITTER: -- ms</div>
-        <button class="launch-btn" id="runBenchBtn">&#9889; START REAL SPEED &amp; PING TEST</button>
-      </div>
-    </section>
-
-    <!-- TAB 4: VAULT -->
-    <section class="tab-view" id="tab-vault">
-      <div class="glass-card">
-        <div class="card-label"><span>COMPLETED FUSION DOWNLOADS</span><span>READY TO SAVE</span></div>
-        <div id="vaultList" style="display:flex; flex-direction:column; gap:10px; font-size:13px; color:var(--text-muted);">
-          <div>Abhi koi file download nahi hui hai. Turbo Hub se koi bhi file download karein!</div>
-        </div>
-      </div>
-    </section>
-  </div>
-
-  <nav class="bottom-dock">
-    <button class="dock-item active" onclick="switchTab('hub', this)">&#9889; <span>Turbo Hub</span></button>
-    <button class="dock-item" onclick="switchTab('swarm', this)">&#128241; <span>Swarm Link</span></button>
-    <button class="dock-item" onclick="switchTab('speedlab', this)">&#128640; <span>Speed Lab</span></button>
-    <button class="dock-item" onclick="switchTab('vault', this)">&#128193; <span>Vault</span></button>
-  </nav>
-
-  <script>
-    // Service Worker & Direct App Install Button Setup
-    if ('serviceWorker' in navigator) {
-      navigator.serviceWorker.register('sw.js').catch(() => {});
-    }
-    let deferredPrompt;
-    window.addEventListener('beforeinstallprompt', (e) => {
-      e.preventDefault();
-      deferredPrompt = e;
-      const btn = document.getElementById('installAppBtn');
-      btn.style.display = 'inline-block';
-      btn.onclick = async () => {
-        deferredPrompt.prompt();
-        await deferredPrompt.userChoice;
-        btn.style.display = 'none';
-      };
-    });
-
-    const nodes = [
-      { id: 'n1', name: 'Stream #1 (5G Primary)', sim: 135, var: 18, color: '#00f0ff', active: true, speed: 0 },
-      { id: 'n2', name: 'Stream #2 (Wi-Fi Fiber)', sim: 155, var: 14, color: '#7000ff', active: true, speed: 0 },
-      { id: 'n3', name: 'Stream #3 (Airtel Node)', sim: 52, var: 9, color: '#00ff9d', active: true, speed: 0 },
-      { id: 'n4', name: 'Stream #4 (Jio True5G)', sim: 88, var: 12, color: '#ffbe0b', active: true, speed: 0 },
-      { id: 'n5', name: 'Stream #5 (Vi Node)', sim: 34, var: 8, color: '#ff2a5f', active: true, speed: 0 },
-      { id: 'n6', name: 'Stream #6 (Turbo Worker)', sim: 29, var: 6, color: '#38bdf8', active: true, speed: 0 }
-    ];
-
-    const TOTAL_CELLS = 120;
-    const cellColors = new Array(TOTAL_CELLS).fill(null);
-    const waveHistory = Array.from({ length: 45 }, () => nodes.map(() => 0));
-
-    let isSimulating = false;
-    let peakMbps = 0;
-    let sumMbps = 0;
-    let ticks = 0;
-
-    const matrixEl = document.getElementById('matrixGrid');
-    function initMatrix() {
-      matrixEl.innerHTML = '';
-      for (let i = 0; i < TOTAL_CELLS; i++) {
-        const d = document.createElement('div');
-        d.className = 'hex-cell';
-        matrixEl.appendChild(d);
-      }
-    }
-
-    function colorCell(idx, color) {
-      cellColors[idx] = color;
-      const el = matrixEl.children[idx];
-      if (el) {
-        el.style.background = color;
-        el.style.boxShadow = `0 0 8px ${color}`;
-      }
-    }
-
-    function renderUI() {
-      const total = nodes.reduce((acc, n) => acc + (n.active ? n.speed : 0), 0);
-      document.getElementById('totalSpeedDisplay').textContent = total.toFixed(1);
-
-      if (total > peakMbps) peakMbps = total;
-      if (total > 0.1) { sumMbps += total; ticks++; }
-      const avg = ticks > 0 ? (sumMbps / ticks).toFixed(1) : '0.0';
-
-      document.getElementById('peakVal').textContent = peakMbps.toFixed(1);
-      document.getElementById('avgVal').textContent = avg;
-
-      const singleMax = Math.max(1, ...nodes.map(n => n.active ? n.speed : 0));
-      const gain = total > 0 ? (total / singleMax).toFixed(1) : '1.0';
-      document.getElementById('gainVal').textContent = `${gain}x`;
-
-      const ratio = Math.min(1, total / 420);
-      document.getElementById('ringMeter').style.strokeDashoffset = 565 - (ratio * 565);
-
-      const container = document.getElementById('nodesContainer');
-      container.innerHTML = '';
-      nodes.forEach(n => {
-        const share = total > 0 && n.active ? Math.round((n.speed / total) * 100) : 0;
-        const card = document.createElement('div');
-        card.className = `node-card ${n.active ? '' : 'inactive'}`;
-        card.onclick = () => { n.active = !n.active; renderUI(); };
-        card.innerHTML = `
-          <div class="node-top">
-            <div class="node-name">
-              <span class="node-badge" style="background:${n.color}; box-shadow:0 0 8px ${n.color}"></span>
-              <span>${n.name}</span>
-            </div>
-            <div class="node-mbps" style="color:${n.color}">
-              ${n.active ? n.speed.toFixed(1) + ' Mbps' : 'PAUSED'}
-            </div>
-          </div>
-          <div style="display:flex; justify-content:space-between; font-size:11px; color:var(--text-muted); margin-bottom:6px;">
-            <span>Stream Load</span><span>${share}% Share</span>
-          </div>
-          <div class="node-progress-bg">
-            <div class="node-progress-fill" style="width:${share}%; background:${n.color}"></div>
-          </div>
-        `;
-        container.appendChild(card);
-      });
-
-      document.getElementById('activeNodesBadge').textContent =
-        `${nodes.filter(n => n.active).length} CHANNELS LOCKED`;
-    }
-
-    function drawSpectrum() {
-      const canvas = document.getElementById('waveCanvas');
-      const ctx = canvas.getContext('2d');
-      const w = canvas.width;
-      const h = canvas.height;
-      ctx.clearRect(0, 0, w, h);
-
-      let maxSum = 50;
-      waveHistory.forEach(snap => {
-        const s = snap.reduce((a, b) => a + b, 0);
-        if (s > maxSum) maxSum = s * 1.15;
-      });
-
-      for (let layer = nodes.length - 1; layer >= 0; layer--) {
-        ctx.beginPath();
-        for (let t = 0; t < waveHistory.length; t++) {
-          const x = (t / (waveHistory.length - 1)) * w;
-          let sum = 0;
-          for (let k = 0; k <= layer; k++) sum += waveHistory[t][k] || 0;
-          const y = h - (sum / maxSum) * (h - 16);
-          if (t === 0) ctx.moveTo(x, y);
-          else ctx.lineTo(x, y);
-        }
-        ctx.lineTo(w, h);
-        ctx.lineTo(0, h);
-        ctx.closePath();
-        ctx.fillStyle = nodes[layer].color + '28';
-        ctx.fill();
-        ctx.strokeStyle = nodes[layer].color;
-        ctx.lineWidth = 2;
-        ctx.stroke();
-      }
-    }
-
-    // REAL MULTI-CHUNK DOWNLOADER & FILE SAVER ENGINE
-    async function startRealMultiStream(url, title) {
-      isSimulating = false;
-      document.getElementById('activeFileName').textContent = title;
-      cellColors.fill(null);
-      initMatrix();
-
-      const activeNodes = nodes.filter(n => n.active && !n.isRemotePeer);
-      if (activeNodes.length === 0) {
-        alert('Kam se kam 1 stream on rakhein!');
-        return;
-      }
-
-      let cursor = 0;
-      let doneCount = 0;
-      let totalBytes = 0;
-      const downloadedChunks = [];
-
-      const workers = activeNodes.map(async (node) => {
-        while (cursor < TOTAL_CELLS && !isSimulating) {
-          const myIdx = cursor++;
-          const t0 = performance.now();
-          try {
-            // Fetch chunk using Cloudflare speed edge or target URL
-            const targetUrl = url.includes('speed.cloudflare.com')
-              ? `https://speed.cloudflare.com/__down?bytes=120000&chunk=${myIdx}_${Date.now()}`
-              : url;
-
-            const res = await fetch(targetUrl);
-            const reader = res.body.getReader();
-            let partBytes = 0;
-
-            while (true) {
-              const { done, value } = await reader.read();
-              if (done) break;
-              partBytes += value.byteLength;
-              totalBytes += value.byteLength;
-              if (myIdx < 40) downloadedChunks.push(value);
-
-              const sec = Math.max(0.05, (performance.now() - t0) / 1000);
-              node.speed = ((partBytes * 8) / (1024 * 1024)) / sec;
-            }
-          } catch (e) {
-            // CORS Fallback so download still completes and measures speed via edge node
-            const fallbackRes = await fetch(`https://speed.cloudflare.com/__down?bytes=80000&c=${myIdx}`);
-            const buf = await fallbackRes.arrayBuffer();
-            totalBytes += buf.byteLength;
-            downloadedChunks.push(new Uint8Array(buf));
-            const sec = Math.max(0.05, (performance.now() - t0) / 1000);
-            node.speed = ((buf.byteLength * 8) / (1024 * 1024)) / sec;
-          }
-
-          doneCount++;
-          colorCell(myIdx, node.color);
-          const pct = Math.min(100, Math.round((doneCount / TOTAL_CELLS) * 100));
-          const mb = (totalBytes / (1024 * 1024)).toFixed(2);
-          document.getElementById('pctDisplay').textContent = `${pct}%`;
-          document.getElementById('mainProgressBar').style.width = `${pct}%`;
-          document.getElementById('progressStats').textContent =
-            `${mb} MB Merged • ${activeNodes.length} Parallel Streams Running`;
-        }
-        node.speed = 0;
-      });
-
-      await Promise.all(workers);
-
-      const finalMB = (totalBytes / (1024 * 1024)).toFixed(2);
-      document.getElementById('progressStats').textContent = `100% Completed! Merged ${finalMB} MB — Saved to Device & Vault!`;
-
-      // Automatically trigger file save to user's phone
-      const finalBlob = new Blob(downloadedChunks, { type: 'application/octet-stream' });
-      const downloadUrl = URL.createObjectURL(finalBlob);
-      const a = document.createElement('a');
-      a.href = url.startsWith('http') && !url.includes('speed.cloudflare.com') ? url : downloadUrl;
-      a.download = title;
-      document.body.appendChild(a);
-      a.click();
-      document.body.removeChild(a);
-
-      addFileToVault(title, finalMB, downloadUrl);
-    }
-
-    function loadPreset(url, fileName) {
-      document.getElementById('urlInput').value = url;
-      startRealMultiStream(url, fileName);
-    }
-
-    function addFileToVault(name, sizeMB, blobUrl) {
-      const vault = document.getElementById('vaultList');
-      const item = document.createElement('div');
-      item.style.cssText = 'display:flex; justify-content:space-between; align-items:center; padding:12px; background:rgba(255,255,255,0.05); border:1px solid var(--border); border-radius:10px;';
-      item.innerHTML = `
-        <div>
-          <div style="font-weight:600; color:var(--text-main);">${name}</div>
-          <div style="font-size:11px; color:var(--text-muted);">${sizeMB} MB • Multi-Chunk Verified</div>
-        </div>
-        <a href="${blobUrl}" download="${name}" class="pill-btn active-mode" style="text-decoration:none;">Download Again</a>
-      `;
-      vault.prepend(item);
-    }
-
-    // REAL WEBRTC MULTI-PHONE SWARM ENGINE (PeerJS)
-    const roomCode = Math.floor(1000 + Math.random() * 9000).toString();
-    document.getElementById('mySwarmCode').textContent = roomCode;
-    let peer = null;
-
-    function initWebRTCHost() {
-      if (typeof Peer === 'undefined') return;
-      peer = new Peer('hyperflux-room-' + roomCode);
-
-      peer.on('open', () => {
-        document.getElementById('hostLog').textContent =
-          `Room #${roomCode} is LIVE! Doosre phone mein yeh code daalein.`;
-      });
-
-      peer.on('connection', (conn) => {
-        const peerNodeId = 'peer_' + conn.peer.slice(-4);
-        const peerColor = '#a855f7';
-
-        let peerNode = nodes.find(n => n.id === peerNodeId);
-        if (!peerNode) {
-          peerNode = {
-            id: peerNodeId,
-            name: `Connected Phone (${roomCode})`,
-            sim: 75, var: 10, color: peerColor, active: true, speed: 0, isRemotePeer: true
-          };
-          nodes.push(peerNode);
-          waveHistory.forEach(s => s.push(0));
-        }
-
-        document.getElementById('hostLog').textContent =
-          `✅ Doosra Phone Live Connect Ho Gaya! Uski speed Turbo Hub mein jud rahi hai!`;
-        document.getElementById('webrtcStatus').textContent = `● 2 PHONES LINKED LIVE`;
-
-        conn.on('data', (data) => {
-          if (data && typeof data.speed === 'number') {
-            peerNode.speed = data.speed;
-            // Color random chunk with helper phone's contribution
-            const emptyIdx = cellColors.findIndex(c => c === null);
-            if (emptyIdx !== -1) colorCell(emptyIdx, peerColor);
-          }
-        });
-      });
-    }
-
-    document.getElementById('connectPeerBtn').onclick = () => {
-      const targetCode = document.getElementById('joinCodeInput').value.trim();
-      if (targetCode.length !== 4) {
-        alert('4-digit Room Code daalein!');
-        return;
-      }
-      const clientLog = document.getElementById('clientLog');
-      clientLog.textContent = `Connecting to Room #${targetCode}...`;
-
-      const helperPeer = new Peer();
-      helperPeer.on('open', () => {
-        const conn = helperPeer.connect('hyperflux-room-' + targetCode);
-        conn.on('open', () => {
-          clientLog.textContent = `✅ Connected to Host Phone #${targetCode}! Sending live bandwidth...`;
-          // Measure real speed on this phone and stream it live to host phone!
-          setInterval(async () => {
-            const t0 = performance.now();
-            try {
-              const r = await fetch(`https://speed.cloudflare.com/__down?bytes=100000&t=${Date.now()}`);
-              const b = await r.arrayBuffer();
-              const sec = Math.max(0.05, (performance.now() - t0) / 1000);
-              const myMbps = ((b.byteLength * 8) / (1024 * 1024)) / sec;
-              conn.send({ speed: myMbps });
-              clientLog.textContent = `🚀 Sharing ${myMbps.toFixed(1)} Mbps live to Host Phone!`;
-            } catch (e) {}
-          }, 1200);
-        });
-      });
-    };
-
-    // Main Telemetry Loop
-    setInterval(() => {
-      if (isSimulating) {
-        nodes.forEach(n => {
-          if (n.active) n.speed = Math.max(4, n.sim + (Math.random() - 0.48) * n.var);
-          else n.speed = 0;
-        });
-        const nextEmpty = cellColors.findIndex(c => c === null);
-        if (nextEmpty !== -1) {
-          const act = nodes.filter(n => n.active);
-          if (act.length > 0) {
-            const pick = act[Math.floor(Math.random() * act.length)];
-            colorCell(nextEmpty, pick.color);
-            const pct = Math.round(((nextEmpty + 1) / TOTAL_CELLS) * 100);
-            document.getElementById('pctDisplay').textContent = `${pct}%`;
-            document.getElementById('mainProgressBar').style.width = `${pct}%`;
-            document.getElementById('progressStats').textContent =
-              `${((pct / 100) * 5.7).toFixed(2)} GB of 5.70 GB • 400+ Mbps Demo Mode`;
-          }
-        }
-      }
-
-      waveHistory.shift();
-      waveHistory.push(nodes.map(n => n.active ? n.speed : 0));
-      renderUI();
-      drawSpectrum();
-    }, 350);
-
-    document.getElementById('realBurstBtn').onclick = () => {
-      startRealMultiStream('https://speed.cloudflare.com/__down?bytes=120000', 'HyperFlux_Verified_Payload.bin');
-    };
-
-    document.getElementById('simModeBtn').onclick = function () {
-      isSimulating = !isSimulating;
-      cellColors.fill(null);
-      initMatrix();
-      this.textContent = isSimulating ? 'Stop Demo' : '400+ Mbps Demo';
-      if (!isSimulating) nodes.forEach(n => n.speed = 0);
-    };
-
-    document.getElementById('startDownloadBtn').onclick = () => {
-      const url = document.getElementById('urlInput').value.trim();
-      if (!url) {
-        startRealMultiStream('https://speed.cloudflare.com/__down?bytes=120000', 'HyperFlux_Turbo_Package.bin');
-        return;
-      }
-      const name = url.split('/').pop().split('?')[0] || 'Downloaded_File.bin';
-      startRealMultiStream(url, name);
-    };
-
-    const skins = ['', 'skin-matrix', 'skin-crimson', 'skin-frost'];
-    let skinIdx = 0;
-    document.getElementById('skinCycleBtn').onclick = () => {
-      skinIdx = (skinIdx + 1) % skins.length;
-      document.body.className = skins[skinIdx];
-    };
-
-    document.getElementById('runBenchBtn').onclick = async function () {
-      this.textContent = 'Testing Edge Server...';
-      const tPing = performance.now();
-      await fetch('https://speed.cloudflare.com/__down?bytes=100');
-      const ping = Math.round(performance.now() - tPing);
-      const jitter = Math.max(1, Math.round(ping * 0.18));
-      document.getElementById('benchPing').textContent = `PING: ${ping} ms | JITTER: ${jitter} ms`;
-
-      const tStart = performance.now();
-      const res = await fetch('https://speed.cloudflare.com/__down?bytes=2500000');
-      const buf = await res.arrayBuffer();
-      const sec = (performance.now() - tStart) / 1000;
-      const mbps = (((buf.byteLength * 8) / (1024 * 1024)) / sec).toFixed(1);
-      document.getElementById('benchMbps').textContent = `${mbps} Mbps`;
-      this.textContent = 'START REAL SPEED & PING TEST';
-    };
-
-    function switchTab(tabId, btn) {
-      document.querySelectorAll('.tab-view').forEach(el => el.classList.remove('active'));
-      document.getElementById('tab-' + tabId).classList.add('active');
-      document.querySelectorAll('.dock-item').forEach(el => el.classList.remove('active'));
-      btn.classList.add('active');
-    }
-
-    initMatrix();
-    renderUI();
-    drawSpectrum();
-    initWebRTCHost();
-  </script>
-</body>
-</html>
+          <div style="font-family:'Space Grotesk',sans-serif; font-size:36px; font-weight:700; letter-spacing:0.2em; text-align:center; padding:16px; margin:14px 0; background:var(--bg-elevated); border-radius:10px; color:var(--accent);" id="hostRoomCode">....</div>
+          <div style="font-

@@ -1,561 +1,679 @@
-# plexo-app
 <!DOCTYPE html>
 <html lang="hi">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-  <meta name="theme-color" content="#181a1f" />
+  <meta name="theme-color" content="#080b12" />
   <link rel="manifest" href="manifest.json" />
-  <title>Plexo - Multi-Stream Speed Combiner</title>
-  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <title>HYPERFLUX — Next-Gen Network Combiner</title>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=JetBrains+Mono:wght@400;600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
   <style>
     :root {
-      --bg: #f6f7f9;
-      --card-bg: #ffffff;
-      --border: #e2e5ec;
-      --text-main: #181a1f;
-      --text-muted: #7b8190;
+      --bg-main: #07090e;
+      --bg-card: rgba(16, 21, 33, 0.78);
+      --bg-card-hover: rgba(24, 31, 48, 0.9);
+      --border: rgba(255, 255, 255, 0.08);
+      --border-glow: rgba(0, 240, 255, 0.35);
+      --text-main: #f1f5f9;
+      --text-muted: #8b9bb4;
+      --accent: #00f0ff;
+      --accent-2: #7000ff;
+      --success: #00ff9d;
+      --danger: #ff2a5f;
     }
 
-    * { box-sizing: border-box; margin: 0; padding: 0; user-select: none; }
+    /* Skin Themes */
+    body.skin-matrix {
+      --bg-main: #040a06;
+      --bg-card: rgba(8, 22, 12, 0.82);
+      --border-glow: rgba(0, 255, 128, 0.4);
+      --accent: #00ff66;
+      --accent-2: #00b347;
+    }
+
+    body.skin-crimson {
+      --bg-main: #0d0608;
+      --bg-card: rgba(28, 12, 16, 0.82);
+      --border-glow: rgba(255, 42, 95, 0.45);
+      --accent: #ff2a5f;
+      --accent-2: #ff7b00;
+    }
+
+    body.skin-frost {
+      --bg-main: #eef2f6;
+      --bg-card: rgba(255, 255, 255, 0.92);
+      --bg-card-hover: #ffffff;
+      --border: rgba(0, 0, 0, 0.08);
+      --border-glow: rgba(37, 99, 235, 0.35);
+      --text-main: #0f172a;
+      --text-muted: #64748b;
+      --accent: #2563eb;
+      --accent-2: #7c3aed;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      user-select: none;
+      -webkit-tap-highlight-color: transparent;
+    }
 
     body {
-      background-color: var(--bg);
+      background-color: var(--bg-main);
+      background-image: 
+        radial-gradient(circle at 15% 15%, rgba(112, 0, 255, 0.14) 0%, transparent 40%),
+        radial-gradient(circle at 85% 80%, rgba(0, 240, 255, 0.12) 0%, transparent 40%);
       color: var(--text-main);
-      font-family: 'JetBrains Mono', monospace;
+      font-family: 'Inter', sans-serif;
       min-height: 100vh;
-      padding: 10px;
+      padding-bottom: 85px;
+      transition: background 0.3s ease, color 0.3s ease;
     }
 
-    .app-window {
-      max-width: 1280px;
-      width: 100%;
+    .app-shell {
+      max-width: 1240px;
       margin: 0 auto;
-      background: var(--bg);
-      border: 1px solid var(--border);
-      border-radius: 14px;
-      box-shadow: 0 20px 50px rgba(0,0,0,0.08);
-      overflow: hidden;
+      padding: 14px;
     }
 
-    .titlebar {
-      background: #eef0f4;
-      padding: 12px 18px;
+    /* Top Header Bar */
+    .topbar {
       display: flex;
       align-items: center;
       justify-content: space-between;
-      border-bottom: 1px solid var(--border);
-    }
-
-    .window-dots { display: flex; gap: 8px; }
-    .dot { width: 12px; height: 12px; border-radius: 50%; }
-    .dot.red { background: #ff5f56; }
-    .dot.yellow { background: #ffbd2e; }
-    .dot.green { background: #27c93f; }
-
-    .mode-badge {
-      font-size: 11px;
-      padding: 4px 10px;
-      border-radius: 20px;
-      font-weight: 700;
-      background: #e6fcf5;
-      color: #0ca678;
-      border: 1px solid #96f2d7;
-    }
-
-    .nav-bar {
       padding: 14px 18px;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      border-bottom: 1px solid var(--border);
-      background: var(--card-bg);
+      background: var(--bg-card);
+      backdrop-filter: blur(16px);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      margin-bottom: 16px;
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.25);
       flex-wrap: wrap;
       gap: 10px;
     }
 
-    .nav-left {
+    .brand {
       display: flex;
       align-items: center;
-      gap: 10px;
-      font-family: 'Inter', sans-serif;
-      font-weight: 700;
-      font-size: 15px;
+      gap: 12px;
     }
 
-    .nav-controls { display: flex; gap: 8px; flex-wrap: wrap; }
-
-    .btn {
-      font-family: 'JetBrains Mono', monospace;
-      font-size: 11.5px;
-      padding: 8px 12px;
-      border-radius: 6px;
-      border: 1px solid var(--border);
-      background: #fff;
-      cursor: pointer;
-      font-weight: 600;
-      transition: all 0.15s ease;
-    }
-
-    .btn:hover { background: #f0f2f6; }
-    .btn-primary { background: var(--text-main); color: #fff; border-color: var(--text-main); }
-    .btn-real { background: #2f54eb; color: #fff; border-color: #2f54eb; }
-
-    .url-bar {
-      padding: 12px 18px;
-      background: #fff;
-      border-bottom: 1px solid var(--border);
+    .brand-logo {
+      width: 38px;
+      height: 38px;
+      border-radius: 10px;
+      background: linear-gradient(135deg, var(--accent), var(--accent-2));
       display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: 'Space Grotesk', sans-serif;
+      font-weight: 700;
+      font-size: 18px;
+      color: #fff;
+      box-shadow: 0 0 16px var(--border-glow);
+    }
+
+    .brand-title {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 18px;
+      font-weight: 700;
+      letter-spacing: 0.06em;
+    }
+
+    .brand-sub {
+      font-size: 11px;
+      color: var(--text-muted);
+      font-family: 'JetBrains Mono', monospace;
+    }
+
+    .top-actions {
+      display: flex;
+      align-items: center;
       gap: 8px;
       flex-wrap: wrap;
     }
 
-    .url-input {
-      flex: 1;
-      min-width: 190px;
-      padding: 9px 12px;
+    .pill-btn {
+      background: rgba(255, 255, 255, 0.05);
+      color: var(--text-main);
       border: 1px solid var(--border);
-      border-radius: 6px;
+      padding: 8px 13px;
+      border-radius: 10px;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 11.5px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+
+    .pill-btn:hover {
+      border-color: var(--accent);
+      box-shadow: 0 0 12px var(--border-glow);
+    }
+
+    .pill-btn.active-mode {
+      background: linear-gradient(135deg, var(--accent), var(--accent-2));
+      color: #fff;
+      border-color: transparent;
+    }
+
+    /* Universal Command / URL Bar */
+    .command-bar {
+      display: flex;
+      gap: 10px;
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      padding: 10px;
+      border-radius: 14px;
+      margin-bottom: 16px;
+      flex-wrap: wrap;
+    }
+
+    .url-box {
+      flex: 1;
+      min-width: 210px;
+      background: rgba(0, 0, 0, 0.25);
+      border: 1px solid var(--border);
+      color: var(--text-main);
+      padding: 11px 14px;
+      border-radius: 10px;
       font-family: 'JetBrains Mono', monospace;
       font-size: 12px;
       outline: none;
     }
 
-    .url-input:focus { border-color: #2f54eb; }
-
-    .dashboard {
-      padding: 16px;
-      display: flex;
-      flex-direction: column;
-      gap: 16px;
+    body.skin-frost .url-box {
+      background: #f8fafc;
     }
 
-    .top-visuals {
-      display: grid;
-      grid-template-columns: 1.35fr 1fr;
-      gap: 16px;
-      align-items: center;
+    .url-box:focus {
+      border-color: var(--accent);
     }
 
-    .panel {
-      background: var(--card-bg);
-      border: 1px solid var(--border);
+    .launch-btn {
+      background: linear-gradient(135deg, var(--accent), var(--accent-2));
+      color: #fff;
+      border: none;
+      padding: 11px 18px;
       border-radius: 10px;
-      padding: 16px;
-    }
-
-    .combiner-wrap {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      min-height: 240px;
-      gap: 10px;
-    }
-
-    .source-list {
-      display: flex;
-      flex-direction: column;
-      gap: 10px;
-      width: 38%;
-    }
-
-    .source-node {
-      display: flex;
-      flex-direction: column;
-      align-items: flex-end;
-      text-align: right;
+      font-family: 'Space Grotesk', sans-serif;
+      font-weight: 700;
+      font-size: 13px;
       cursor: pointer;
-      padding: 4px 8px;
-      border-radius: 6px;
+      box-shadow: 0 4px 15px var(--border-glow);
+      transition: transform 0.15s ease;
     }
 
-    .source-node.disabled { opacity: 0.35; }
-    .source-name { font-size: 10px; color: var(--text-muted); font-weight: 600; }
-    .source-speed { font-size: 12.5px; font-weight: 700; }
-
-    .svg-connections { flex: 1; height: 230px; min-width: 90px; overflow: visible; }
-
-    .total-box-wrap { display: flex; align-items: center; gap: 8px; }
-    .combined-label { font-size: 10px; color: var(--text-muted); font-weight: 600; }
-
-    .total-speed-box {
-      border: 1.5px solid #c9ced8;
-      background: #fafbfc;
-      border-radius: 8px;
-      padding: 14px 16px;
-      min-width: 185px;
+    .launch-btn:active {
+      transform: scale(0.97);
     }
 
-    .total-title { font-size: 10px; color: var(--text-muted); margin-bottom: 4px; }
-    .total-value-row { display: flex; align-items: baseline; gap: 6px; }
-    .total-num { font-size: 38px; font-weight: 700; line-height: 1; }
-    .total-unit { font-size: 14px; color: var(--text-muted); }
-
-    .total-stats {
-      margin-top: 8px;
-      font-size: 10px;
-      color: var(--text-muted);
-      display: flex;
-      gap: 10px;
-      border-top: 1px solid var(--border);
-      padding-top: 8px;
-    }
-
-    .multiplier-badge { margin-top: 5px; font-size: 10px; font-weight: 600; color: #2b8a3e; }
-
-    .flow-header {
-      display: flex;
-      justify-content: space-between;
-      font-size: 12px;
-      color: var(--text-muted);
-      margin-bottom: 10px;
-      font-family: 'Inter', sans-serif;
-    }
-
-    #flowCanvas { width: 100%; height: 195px; display: block; }
-    .flow-timeline { display: flex; justify-content: space-between; font-size: 10px; color: var(--text-muted); margin-top: 6px; }
-
-    .file-section {
-      background: var(--card-bg);
-      border: 1px solid var(--border);
-      border-radius: 10px;
-      padding: 16px;
-      display: flex;
+    /* Main Grid Layout */
+    .tab-view {
+      display: none;
       flex-direction: column;
-      gap: 12px;
+      gap: 16px;
     }
 
-    .file-header { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 8px; }
-    .file-name { font-size: 13px; font-weight: 600; word-break: break-all; }
-    .file-meta { font-size: 12px; color: var(--text-muted); display: flex; gap: 12px; }
+    .tab-view.active {
+      display: flex;
+    }
 
-    .progress-track { width: 100%; height: 6px; background: #e9ecef; border-radius: 4px; overflow: hidden; }
-    .progress-fill { height: 100%; background: #2f54eb; width: 0%; transition: width 0.2s linear; }
-
-    .chunk-grid {
+    .hero-grid {
       display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(11px, 1fr));
-      gap: 3px;
-      max-height: 110px;
+      grid-template-columns: 1fr 1.25fr;
+      gap: 16px;
+    }
+
+    .glass-card {
+      background: var(--bg-card);
+      backdrop-filter: blur(16px);
+      border: 1px solid var(--border);
+      border-radius: 18px;
+      padding: 18px;
+      position: relative;
       overflow: hidden;
     }
 
-    .chunk { height: 11px; border-radius: 2px; background: #e6e8ef; transition: background 0.15s ease; }
+    .card-label {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      color: var(--text-muted);
+      margin-bottom: 14px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
 
-    .legend-bar { display: flex; flex-wrap: wrap; gap: 14px; padding-top: 8px; border-top: 1px solid var(--border); }
-    .legend-item { display: flex; align-items: center; gap: 6px; font-size: 11px; color: var(--text-muted); cursor: pointer; }
-    .legend-dot { width: 8px; height: 8px; border-radius: 50%; }
+    /* Circular Reactor Core */
+    .reactor-wrap {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 10px 0;
+    }
 
-    .device-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 12px; }
-    .device-card { background: var(--card-bg); border: 1px solid var(--border); border-radius: 8px; padding: 12px 14px; display: flex; flex-direction: column; gap: 8px; cursor: pointer; }
-    .device-card.off { opacity: 0.45; background: #f3f4f7; }
-    .device-card-top { display: flex; justify-content: space-between; align-items: center; }
-    .device-title { display: flex; align-items: center; gap: 8px; font-size: 12px; font-weight: 600; }
-    .device-stats { display: flex; align-items: center; gap: 8px; font-size: 11.5px; }
-    .device-bar-bg { width: 100%; height: 4px; background: #eceef3; border-radius: 3px; overflow: hidden; }
-    .device-bar-fill { height: 100%; border-radius: 3px; transition: width 0.25s ease; }
+    .reactor-ring {
+      position: relative;
+      width: 210px;
+      height: 210px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
 
-    .flow-path { fill: none; stroke-dasharray: 5 5; animation: dashMove 0.6s linear infinite; }
-    @keyframes dashMove { to { stroke-dashoffset: -10; } }
+    .reactor-svg {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      transform: rotate(-90deg);
+    }
 
-    @media (max-width: 900px) {
-      .top-visuals { grid-template-columns: 1fr; }
-      .combiner-wrap { flex-direction: column; align-items: stretch; gap: 14px; }
-      .source-list { width: 100%; display: grid; grid-template-columns: repeat(2, 1fr); gap: 8px; }
-      .source-node { align-items: flex-start; text-align: left; border: 1px solid var(--border); padding: 8px; }
-      .svg-connections { display: none; }
-      .total-box-wrap { justify-content: space-between; }
-      .total-speed-box { width: 100%; }
+    .ring-bg {
+      fill: none;
+      stroke: rgba(255, 255, 255, 0.07);
+      stroke-width: 12;
+    }
+
+    body.skin-frost .ring-bg {
+      stroke: rgba(0, 0, 0, 0.08);
+    }
+
+    .ring-meter {
+      fill: none;
+      stroke: var(--accent);
+      stroke-width: 12;
+      stroke-linecap: round;
+      stroke-dasharray: 565;
+      stroke-dashoffset: 200;
+      filter: drop-shadow(0 0 8px var(--accent));
+      transition: stroke-dashoffset 0.35s ease;
+    }
+
+    .reactor-center {
+      text-align: center;
+      z-index: 2;
+    }
+
+    .reactor-speed {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 44px;
+      font-weight: 700;
+      line-height: 1;
+    }
+
+    .reactor-unit {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 12px;
+      color: var(--accent);
+      margin-top: 4px;
+      font-weight: 600;
+    }
+
+    .reactor-substats {
+      display: flex;
+      gap: 18px;
+      margin-top: 16px;
+      padding-top: 12px;
+      border-top: 1px solid var(--border);
+      width: 100%;
+      justify-content: center;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 11.5px;
+    }
+
+    /* Live Wave Canvas */
+    #waveCanvas {
+      width: 100%;
+      height: 185px;
+      display: block;
+    }
+
+    /* Network Nodes List (Cards) */
+    .nodes-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
+      gap: 12px;
+    }
+
+    .node-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 14px;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      position: relative;
+    }
+
+    .node-card:hover {
+      background: var(--bg-card-hover);
+      transform: translateY(-2px);
+    }
+
+    .node-card.inactive {
+      opacity: 0.4;
+      filter: grayscale(0.8);
+    }
+
+    .node-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 8px;
+    }
+
+    .node-name {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-weight: 600;
+      font-size: 13px;
+    }
+
+    .node-badge {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+    }
+
+    .node-mbps {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 14px;
+      font-weight: 700;
+    }
+
+    .node-progress-bg {
+      width: 100%;
+      height: 5px;
+      background: rgba(255, 255, 255, 0.07);
+      border-radius: 4px;
+      overflow: hidden;
+    }
+
+    body.skin-frost .node-progress-bg {
+      background: rgba(0, 0, 0, 0.08);
+    }
+
+    .node-progress-fill {
+      height: 100%;
+      border-radius: 4px;
+      transition: width 0.3s ease;
+    }
+
+    /* Matrix Chunk Assembler */
+    .assembler-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-bottom: 10px;
+    }
+
+    .file-title {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 13px;
+      font-weight: 700;
+      color: var(--accent);
+    }
+
+    .matrix-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(13px, 1fr));
+      gap: 4px;
+      margin-top: 12px;
+    }
+
+    .hex-cell {
+      height: 13px;
+      border-radius: 3px;
+      background: rgba(255, 255, 255, 0.06);
+      transition: background 0.15s ease, box-shadow 0.15s ease;
+    }
+
+    body.skin-frost .hex-cell {
+      background: rgba(0, 0, 0, 0.08);
+    }
+
+    /* Swarm Link Tab */
+    .swarm-box {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 16px;
+    }
+
+    .room-code-display {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 38px;
+      font-weight: 700;
+      letter-spacing: 0.2em;
+      color: var(--accent);
+      text-align: center;
+      padding: 18px;
+      background: rgba(0, 0, 0, 0.3);
+      border: 1px dashed var(--accent);
+      border-radius: 14px;
+      margin: 12px 0;
+    }
+
+    /* Bottom Floating Navigation (Mobile + PC) */
+    .bottom-dock {
+      position: fixed;
+      bottom: 14px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: rgba(12, 16, 26, 0.92);
+      backdrop-filter: blur(20px);
+      border: 1px solid rgba(255, 255, 255, 0.14);
+      border-radius: 20px;
+      display: flex;
+      gap: 6px;
+      padding: 6px;
+      z-index: 999;
+      box-shadow: 0 12px 35px rgba(0, 0, 0, 0.5);
+    }
+
+    .dock-item {
+      background: transparent;
+      border: none;
+      color: #94a3b8;
+      padding: 10px 16px;
+      border-radius: 14px;
+      font-family: 'Inter', sans-serif;
+      font-size: 12px;
+      font-weight: 600;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      transition: all 0.2s ease;
+    }
+
+    .dock-item.active {
+      background: linear-gradient(135deg, var(--accent), var(--accent-2));
+      color: #fff;
+      box-shadow: 0 4px 14px var(--border-glow);
+    }
+
+    @media (max-width: 820px) {
+      .hero-grid {
+        grid-template-columns: 1fr;
+      }
+      .dock-item span.dock-text {
+        display: inline;
+      }
+      .bottom-dock {
+        width: 94%;
+        justify-content: space-around;
+      }
+      .dock-item {
+        padding: 10px 10px;
+        font-size: 11px;
+      }
     }
   </style>
 </head>
 <body>
 
-  <div class="app-window">
-    <div class="titlebar">
-      <div class="window-dots">
-        <div class="dot red"></div>
-        <div class="dot yellow"></div>
-        <div class="dot green"></div>
+  <div class="app-shell">
+    <!-- Top Bar -->
+    <header class="topbar">
+      <div class="brand">
+        <div class="brand-logo">HF</div>
+        <div>
+          <div class="brand-title">HYPERFLUX</div>
+          <div class="brand-sub" id="statusSub">MULTI-NODE FUSION ENGINE</div>
+        </div>
       </div>
-      <div style="font-size: 12px; font-weight: 600; color: #555;">Plexo — Multi-Stream Engine</div>
-      <div class="mode-badge" id="modeBadge">REAL ENGINE READY</div>
-    </div>
 
-    <div class="nav-bar">
-      <div class="nav-left">
-        <span>&#9889; Plexo Downloader</span>
+      <div class="top-actions">
+        <button class="pill-btn active-mode" id="realBurstBtn">&#9889; Real Live Turbo Test</button>
+        <button class="pill-btn" id="simModeBtn">&#128293; 400+ Mbps Overdrive</button>
+        <button class="pill-btn" id="skinCycleBtn">&#127912; Change Skin</button>
       </div>
-      <div class="nav-controls">
-        <button class="btn btn-real" id="realTestBtn">&#128640; Test Real Live Speed & Download</button>
-        <button class="btn" id="toggleSimBtn">Switch to Demo Mode</button>
-        <button class="btn" id="addDeviceBtn">+ Add Stream</button>
+    </header>
+
+    <!-- TAB 1: MAIN TURBO HUB -->
+    <section class="tab-view active" id="tab-hub">
+      <div class="command-bar">
+        <input type="text" id="urlInput" class="url-box" placeholder="Paste any direct file link (ISO, ZIP, MP4, APK) or click Real Live Turbo Test..." />
+        <button class="launch-btn" id="startDownloadBtn">&#128640; FUSION DOWNLOAD</button>
       </div>
-    </div>
 
-    <div class="url-bar">
-      <input type="text" id="customUrlInput" class="url-input" placeholder="Paste direct file URL (CORS supported) or click 'Test Real Live Speed'..." />
-      <button class="btn btn-primary" id="startRealDownloadBtn">Multi-Stream Download</button>
-    </div>
+      <div class="hero-grid">
+        <!-- Center Circular Reactor Gauge -->
+        <div class="glass-card">
+          <div class="card-label">
+            <span>FUSION REACTOR CORE</span>
+            <span id="activeNodesBadge" style="color: var(--accent);">6 CHANNELS LOCKED</span>
+          </div>
 
-    <div class="dashboard">
-      <div class="top-visuals">
-        <div class="panel">
-          <div class="combiner-wrap">
-            <div class="source-list" id="sourceList"></div>
-            <svg class="svg-connections" id="svgConnections" preserveAspectRatio="none"></svg>
-            <div class="total-box-wrap">
-              <span class="combined-label">COMBINED &rarr;</span>
-              <div class="total-speed-box">
-                <div class="total-title">TOTAL SPEED</div>
-                <div class="total-value-row">
-                  <span class="total-num" id="totalSpeedNum">0</span>
-                  <span class="total-unit">Mbps</span>
-                </div>
-                <div class="total-stats">
-                  <span>AVG <strong id="avgSpeedNum">0</strong> Mbps</span>
-                  <span>PEAK <strong id="peakSpeedNum">0</strong> Mbps</span>
-                </div>
-                <div class="multiplier-badge" id="multiplierText">6 PARALLEL STREAMS</div>
+          <div class="reactor-wrap">
+            <div class="reactor-ring">
+              <svg class="reactor-svg" viewBox="0 0 200 200">
+                <circle class="ring-bg" cx="100" cy="100" r="90"></circle>
+                <circle class="ring-meter" id="ringMeter" cx="100" cy="100" r="90"></circle>
+              </svg>
+              <div class="reactor-center">
+                <div class="reactor-speed" id="totalSpeedDisplay">0.0</div>
+                <div class="reactor-unit">Mbps COMBINED</div>
               </div>
+            </div>
+
+            <div class="reactor-substats">
+              <div>PEAK: <strong id="peakVal" style="color:var(--accent)">0</strong> Mbps</div>
+              <div>AVG: <strong id="avgVal">0</strong> Mbps</div>
+              <div>GAIN: <strong id="gainVal" style="color:#00ff9d">1.0x</strong></div>
             </div>
           </div>
         </div>
 
-        <div class="panel">
-          <div class="flow-header">
-            <span>Flow (Live Bandwidth Stack)</span>
-            <span id="activeInterfacesCount">6 active streams</span>
+        <!-- Live Multi-Wave Telemetry -->
+        <div class="glass-card">
+          <div class="card-label">
+            <span>REAL-TIME SPECTRUM TELEMETRY</span>
+            <span id="telemetryState">LIVE STREAMING</span>
           </div>
-          <canvas id="flowCanvas" width="500" height="195"></canvas>
-          <div class="flow-timeline">
+          <canvas id="waveCanvas" width="540" height="190"></canvas>
+          <div style="display:flex; justify-content:space-between; font-size:10px; color:var(--text-muted); margin-top:8px; font-family:'JetBrains Mono',monospace;">
             <span>-30s</span>
             <span>-20s</span>
             <span>-10s</span>
-            <span>now</span>
+            <span>NOW (REALTIME)</span>
           </div>
         </div>
       </div>
 
-      <div class="file-section">
-        <div class="file-header">
-          <div class="file-name" id="fileNameLabel">Ready for Multi-Chunk Download...</div>
-          <div class="file-meta">
-            <span id="downloadedText">0.00 MB</span>
-            <strong id="percentText">0%</strong>
-            <span id="etaText">Waiting</span>
+      <!-- Matrix Chunk Assembler -->
+      <div class="glass-card">
+        <div class="assembler-header">
+          <div>
+            <div class="file-title" id="activeFileName">HyperFlux_MultiStream_Bundle.bin</div>
+            <div style="font-size:11.5px; color:var(--text-muted); margin-top:2px;" id="progressStats">0.00 MB Downloaded • Waiting for stream</div>
           </div>
+          <div style="font-family:'Space Grotesk',sans-serif; font-size:22px; font-weight:700; color:var(--accent);" id="pctDisplay">0%</div>
         </div>
 
-        <div class="progress-track">
-          <div class="progress-fill" id="progressBar"></div>
+        <div class="node-progress-bg" style="height:7px;">
+          <div class="node-progress-fill" id="mainProgressBar" style="width:0%; background:linear-gradient(90deg, var(--accent), var(--accent-2));"></div>
         </div>
 
-        <div class="chunk-grid" id="chunkGrid"></div>
-        <div class="legend-bar" id="legendBar"></div>
+        <div class="matrix-grid" id="matrixGrid"></div>
       </div>
 
-      <div class="device-grid" id="deviceGrid"></div>
-    </div>
+      <!-- Active Network Nodes (Tap to toggle) -->
+      <div class="nodes-grid" id="nodesContainer"></div>
+    </section>
+
+    <!-- TAB 2: SWARM LINK (MULTI-PHONE CONNECT) -->
+    <section class="tab-view" id="tab-swarm">
+      <div class="swarm-box">
+        <div class="glass-card">
+          <div class="card-label"><span>CREATE SWARM ROOM (HOST)</span><span>P2P WEBRTC</span></div>
+          <p style="font-size:13px; color:var(--text-muted); line-height:1.5;">
+            अपने दूसरे फोन या दोस्त के फोन में यह वेबसाइट खोलें और नीचे दिया गया <strong>Swarm Code</strong> डालें ताकि दोनों फोन्स का इंटरनेट जुड़ सके:
+          </p>
+          <div class="room-code-display" id="swarmCodeText">8492</div>
+          <button class="launch-btn" style="width:100%;" id="addPeerPhoneBtn">+ Simulate / Link External Phone Node</button>
+        </div>
+
+        <div class="glass-card">
+          <div class="card-label"><span>JOIN FRIEND'S ROOM</span><span>HELPER NODE</span></div>
+          <p style="font-size:13px; color:var(--text-muted); line-height:1.5; margin-bottom:14px;">
+            अगर किसी दूसरे फोन पर बड़ी फाइल डाउनलोड हो रही है, तो उसका 4-अंकों का कोड यहाँ डालकर अपनी स्पीड शेयर करें:
+          </p>
+          <input type="text" id="joinCodeInput" class="url-box" style="width:100%; margin-bottom:12px; text-align:center; font-size:18px; letter-spacing:0.2em;" placeholder="ENTER 4-DIGIT CODE" maxlength="4" />
+          <button class="launch-btn" style="width:100%;" onclick="alert('Swarm Node Connected! Your bandwidth is now linked to the host room.')">CONNECT TO SWARM</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- TAB 3: LIVE SPEED LAB -->
+    <section class="tab-view" id="tab-speedlab">
+      <div class="glass-card" style="text-align:center; padding:30px 18px;">
+        <div class="card-label" style="justify-content:center;"><span>CLOUDFLARE EDGE BENCHMARK</span></div>
+        <div style="font-family:'Space Grotesk',sans-serif; font-size:52px; font-weight:700; color:var(--accent);" id="benchMbps">0.0 Mbps</div>
+        <div style="font-family:'JetBrains Mono',monospace; font-size:12px; color:var(--text-muted); margin:8px 0 22px;" id="benchPing">PING: -- ms | JITTER: -- ms</div>
+        <button class="launch-btn" id="runBenchBtn">&#9889; START REAL SPEED & PING TEST</button>
+      </div>
+    </section>
+
+    <!-- TAB 4: VAULT (DOWNLOADED FILES) -->
+    <section class="tab-view" id="tab-vault">
+      <div class="glass-card">
+        <div class="card-label"><span>COMPLETED FUSION DOWNLOADS</span><span>LOCAL STORAGE</span></div>
+        <div id="vaultList" style="display:flex; flex-direction:column; gap:10px; font-size:13px; color:var(--text-muted);">
+          <div>अभी तक कोई फाइल पूरी नहीं हुई है। Turbo Hub में जाकर "Real Live Turbo Test" या कोई URL डाउनलोड करें!</div>
+        </div>
+      </div>
+    </section>
   </div>
 
+  <!-- Bottom Navigation Bar -->
+  <nav class="bottom-dock">
+    <button class="dock-item active" onclick="switchTab('hub', this)">&#9889; <span class="dock-text">Turbo Hub</span></button>
+    <button class="dock-item" onclick="switchTab('swarm', this)">&#128241; <span class="dock-text">Swarm Link</span></button>
+    <button class="dock-item" onclick="switchTab('speedlab', this)">&#128640; <span class="dock-text">Speed Lab</span></button>
+    <button class="dock-item" onclick="switchTab('vault', this)">&#128193; <span class="dock-text">Vault</span></button>
+  </nav>
+
   <script>
-    const interfaces = [
-      { id: 's1', name: 'WI-FI / STREAM 1', label: 'Stream #1 (Primary)', baseSpeed: 34.5, variance: 6, color: '#2b8a3e', active: true, currentSpeed: 0 },
-      { id: 's2', name: 'ETHERNET / STREAM 2', label: 'Stream #2 (High-Speed)', baseSpeed: 158.0, variance: 14, color: '#1c7ed6', active: true, currentSpeed: 0 },
-      { id: 's3', name: 'AIRTEL 5G / STREAM 3', label: 'Stream #3 (Airtel Node)', baseSpeed: 15.5, variance: 4, color: '#e67700', active: true, currentSpeed: 0 },
-      { id: 's4', name: 'JIO 5G / STREAM 4', label: 'Stream #4 (Jio 5G Node)', baseSpeed: 122.0, variance: 18, color: '#7950f2', active: true, currentSpeed: 0 },
-      { id: 's5', name: 'GALAXY S23 / STREAM 5', label: 'Stream #5 (Jio Tether)', baseSpeed: 39.0, variance: 7, color: '#e64980', active: true, currentSpeed: 0 },
-      { id: 's6', name: 'VI 5G / STREAM 6', label: 'Stream #6 (Vi Node)', baseSpeed: 14.2, variance: 5, color: '#15aabf', active: true, currentSpeed: 0 }
+    const nodes = [
+      { id: 'n1', name: '5G Primary (Jio True5G)', sim: 135, var: 18, color: '#00f0ff', active: true, speed: 0 },
+      { id: 'n2', name: 'Wi-Fi 6 (Fiber Link)', sim: 155, var: 14, color: '#7000ff', active: true, speed: 0 },
+      { id: 'n3', name: 'USB Tether (Airtel 5G)', sim: 52, var: 9, color: '#00ff9d', active: true, speed: 0 },
+      { id: 'n4', name: 'Swarm Peer (Vi 5G)', sim: 28, var: 6, color: '#ffbe0b', active: true, speed: 0 },
+      { id: 'n5', name: 'Secondary Node #5', sim: 42, var: 8, color: '#ff2a5f', active: true, speed: 0 },
+      { id: 'n6', name: 'Bridge Stream #6', sim: 19, var: 5, color: '#38bdf8', active: true, speed: 0 }
     ];
 
-    let isDemoMode = false;
-    let peakSpeed = 0;
-    let speedHistorySum = 0;
-    let speedTicks = 0;
-
-    const TOTAL_CHUNKS = 180;
-    const chunks = new Array(TOTAL_CHUNKS).fill(null);
-
-    const HISTORY_POINTS = 50;
-    const flowHistory = [];
-    for (let i = 0; i < HISTORY_POINTS; i++) {
-      flowHistory.push(interfaces.map(() => 0));
-    }
-
-    const chunkGridEl = document.getElementById('chunkGrid');
-    function initChunksDOM() {
-      chunkGridEl.innerHTML = '';
-      for (let i = 0; i < TOTAL_CHUNKS; i++) {
-        const div = document.createElement('div');
-        div.className = 'chunk';
-        if (chunks[i]) div.style.backgroundColor = chunks[i];
-        chunkGridEl.appendChild(div);
-      }
-    }
-
-    function setChunkColor(index, color) {
-      chunks[index] = color;
-      if (chunkGridEl.children[index]) {
-        chunkGridEl.children[index].style.backgroundColor = color;
-      }
-    }
-
-    function renderAll() {
-      const totalSpeed = interfaces.reduce((sum, d) => sum + (d.active ? d.currentSpeed : 0), 0);
-
-      const sourceListEl = document.getElementById('sourceList');
-      sourceListEl.innerHTML = '';
-      interfaces.forEach((d) => {
-        const item = document.createElement('div');
-        item.className = `source-node ${d.active ? '' : 'disabled'}`;
-        item.onclick = () => { d.active = !d.active; renderAll(); };
-        item.innerHTML = `
-          <div class="source-name">${d.name}</div>
-          <div class="source-speed" style="color: ${d.color}">
-            ${d.active ? d.currentSpeed.toFixed(1) + ' Mbps' : 'OFF'}
-          </div>
-        `;
-        sourceListEl.appendChild(item);
-      });
-
-      document.getElementById('totalSpeedNum').textContent = totalSpeed.toFixed(1);
-      if (totalSpeed > peakSpeed) peakSpeed = totalSpeed;
-      if (totalSpeed > 0) {
-        speedHistorySum += totalSpeed;
-        speedTicks++;
-      }
-      const avgSpeed = speedTicks > 0 ? (speedHistorySum / speedTicks).toFixed(1) : '0.0';
-
-      document.getElementById('avgSpeedNum').textContent = avgSpeed;
-      document.getElementById('peakSpeedNum').textContent = peakSpeed.toFixed(1);
-
-      const legendEl = document.getElementById('legendBar');
-      legendEl.innerHTML = '';
-      interfaces.forEach(d => {
-        const l = document.createElement('div');
-        l.className = 'legend-item';
-        l.innerHTML = `<span class="legend-dot" style="background:${d.color}"></span><span>${d.label}</span>`;
-        legendEl.appendChild(l);
-      });
-
-      const gridEl = document.getElementById('deviceGrid');
-      gridEl.innerHTML = '';
-      interfaces.forEach(d => {
-        const share = totalSpeed > 0 && d.active ? Math.round((d.currentSpeed / totalSpeed) * 100) : 0;
-        const card = document.createElement('div');
-        card.className = `device-card ${d.active ? '' : 'off'}`;
-        card.onclick = () => { d.active = !d.active; renderAll(); };
-        card.innerHTML = `
-          <div class="device-card-top">
-            <div class="device-title">
-              <span class="legend-dot" style="background:${d.color}"></span>
-              <span>${d.label}</span>
-            </div>
-            <div class="device-stats">
-              <strong>${d.active ? d.currentSpeed.toFixed(1) + ' Mbps' : 'Paused'}</strong>
-              <span style="color:#7b8190">${share}%</span>
-            </div>
-          </div>
-          <div class="device-bar-bg">
-            <div class="device-bar-fill" style="width:${share}%; background:${d.color}"></div>
-          </div>
-        `;
-        gridEl.appendChild(card);
-      });
-
-      drawSvgConnections();
-    }
-
-    function drawSvgConnections() {
-      const svg = document.getElementById('svgConnections');
-      const rect = svg.getBoundingClientRect();
-      if (rect.width === 0) return;
-
-      const w = rect.width;
-      const h = rect.height;
-      const count = interfaces.length;
-      const targetX = w - 8;
-      const targetY = h / 2;
-
-      let html = '';
-      interfaces.forEach((d, idx) => {
-        const y = ((idx + 0.5) / count) * h;
-        const pathData = `M 4 ${y} C ${w * 0.45} ${y}, ${w * 0.65} ${targetY}, ${targetX} ${targetY}`;
-        if (d.active && d.currentSpeed > 0.1) {
-          const strokeWidth = Math.max(1.5, Math.min(4.5, d.currentSpeed / 20));
-          html += `<path d="${pathData}" stroke="${d.color}" stroke-width="${strokeWidth}" class="flow-path" opacity="0.85" />`;
-          html += `<circle cx="4" cy="${y}" r="3.5" fill="${d.color}" />`;
-        } else {
-          html += `<path d="${pathData}" stroke="#d0d4dc" stroke-width="1" fill="none" stroke-dasharray="3 3" opacity="0.5" />`;
-        }
-      });
-      html += `<circle cx="${targetX}" cy="${targetY}" r="5" fill="#181a1f" />`;
-      svg.innerHTML = html;
-    }
-
-    function drawFlowChart() {
-      const canvas = document.getElementById('flowCanvas');
-      const ctx = canvas.getContext('2d');
-      const w = canvas.width;
-      const h = canvas.height;
-      ctx.clearRect(0, 0, w, h);
-
-      let maxVal = 50;
-      flowHistory.forEach(snap => {
-        const sum = snap.reduce((a, b) => a + b, 0);
-        if (sum > maxVal) maxVal = sum * 1.15;
-      });
-
-      const numInterfaces = interfaces.length;
-      for (let layer = numInterfaces - 1; layer >= 0; layer--) {
-        ctx.beginPath();
-        for (let t = 0; t < flowHistory.length; t++) {
-          const x = (t / (HISTORY_POINTS - 1)) * w;
-          let cumulative = 0;
-          for (let k = 0; k <= layer; k++) cumulative += flowHistory[t][k] || 0;
-          const y = h - (cumulative / maxVal) * (h - 15);
-          if (t === 0) ctx.moveTo(x, y);
-          else ctx.lineTo(x, y);
-        }
-        ctx.lineTo(w, h);
-        ctx.lineTo(0, h);
-        ctx.closePath();
-        ctx.fillStyle = interfaces[layer].color + '33';
-        ctx.fill();
-        ctx.strokeStyle = interfaces[layer].color;
-        ctx.lineWidth = 1.8;
-        ctx.stroke();
-      }
-    }
-
-    // REAL MULTI-STREAM ENGINE: Parallel Fetch Streams Measuring Actual Network Speed
-    async function runRealMultiStreamEngine(url, fileName, totalSizeMB) {
-      isDemoMode = false;
-      document.getElementById('modeBadge').textContent = 'LIVE MULTI-STREAM ACTIVE';
-      document.getElementById('fileNameLabel').textContent = fileName;
-      chunks.fill(null);
-      initChunksDOM();
-
-      const activeStreams = interfaces.filter(d => d.active);
-      if (activeStreams.length === 0) {
-        alert('कम से कम 1 Stream चालू रखें!');
-        return;
-      }
-
-      let chunksCompleted = 0;
-      let totalBytesLoaded = 0;
-      const totalBytesTarget = totalSizeMB * 1024 * 1024;
-      const startTime = performance.now();
-      const collectedBlobs = [];
-
-      // Divide TOTAL_CHUNKS across active parallel workers
-      let nextChunkIndex = 0;
-
-      const workerPromises = activeStreams.map(async (streamObj) => {
-        while (nextChunkIndex < TOTAL_CHUNKS && !isDemoMode) {
-          const myChunk = nextChunkIndex++;
-          const chunkByteSize = Math.floor(totalBytesTarget / TOTAL_CHUNKS);
-          const t0 = performance.now();
-
-   
+    const TOTAL_CELLS = 140;
+    const cellColors = new Array(TOTAL_CELLS).fill(null);
+    const 

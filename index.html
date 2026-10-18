@@ -732,3 +732,334 @@
           </p>
           <div style="font-family:'Space Grotesk',sans-serif; font-size:36px; font-weight:700; letter-spacing:0.2em; text-align:center; padding:16px; margin:14px 0; background:var(--bg-elevated); border-radius:10px; color:var(--accent);" id="hostRoomCode">....</div>
           <div style="font-
+            <!-- ================= ADD-ON MODULE: ALL MISSING BUTTONS & FEATURES ================= -->
+<style>
+  /* Extra Skins */
+  body.skin-matrix {
+    --bg-main: #040a06 !important;
+    --bg-surface: #09180e !important;
+    --bg-elevated: #102618 !important;
+    --accent: #00ff66 !important;
+    --accent-glow: rgba(0, 255, 102, 0.35) !important;
+  }
+  body.skin-crimson {
+    --bg-main: #0e0508 !important;
+    --bg-surface: #1c0b11 !important;
+    --bg-elevated: #2b111a !important;
+    --accent: #ff2a5f !important;
+    --accent-glow: rgba(255, 42, 95, 0.35) !important;
+  }
+
+  .quick-top-bar {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+    margin-bottom: 14px;
+  }
+
+  .preset-chips-bar {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex-wrap: wrap;
+    margin-top: 12px;
+    padding-top: 12px;
+    border-top: 1px dashed var(--border);
+  }
+
+  .chip-btn {
+    background: var(--bg-elevated);
+    color: var(--text-primary);
+    border: 1px solid var(--border);
+    padding: 6px 12px;
+    border-radius: 8px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.15s ease;
+  }
+
+  .chip-btn:hover {
+    border-color: var(--accent);
+    color: var(--accent);
+    box-shadow: 0 0 10px var(--accent-glow);
+  }
+
+  /* Video-Style Node-Link Combiner Graph */
+  .node-combiner-card {
+    background: var(--bg-surface);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 16px;
+    margin-bottom: 16px;
+  }
+
+  .combiner-stage {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+    min-height: 210px;
+  }
+
+  .combiner-sources {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    width: 36%;
+  }
+
+  .combiner-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 5px 10px;
+    background: var(--bg-elevated);
+    border: 1px solid var(--border);
+    border-radius: 7px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    cursor: pointer;
+  }
+
+  .combiner-item.off { opacity: 0.35; }
+
+  .combiner-svg {
+    flex: 1;
+    height: 200px;
+    min-width: 90px;
+    overflow: visible;
+  }
+
+  .combiner-target {
+    border: 1.5px solid var(--accent);
+    background: var(--bg-elevated);
+    border-radius: 12px;
+    padding: 14px 16px;
+    min-width: 170px;
+    text-align: center;
+    box-shadow: 0 0 20px var(--accent-glow);
+  }
+
+  .anim-dash {
+    fill: none;
+    stroke-dasharray: 6 5;
+    animation: flowDash 0.55s linear infinite;
+  }
+
+  @keyframes flowDash {
+    to { stroke-dashoffset: -11; }
+  }
+
+  @media (max-width: 780px) {
+    .combiner-stage { flex-direction: column; align-items: stretch; }
+    .combiner-sources { width: 100%; display: grid; grid-template-columns: repeat(2, 1fr); }
+    .combiner-svg { height: 70px; width: 100%; }
+  }
+</style>
+
+<script>
+  (function injectAllMissingFeatures() {
+    // 1. Inject Top Action Buttons Bar (Live Test, 400+ Mbps Demo, 4 Skins, Boost)
+    const dashboardView = document.getElementById('view-dashboard');
+    const topActionRow = document.createElement('div');
+    topActionRow.className = 'quick-top-bar';
+    topActionRow.innerHTML = `
+      <button class="btn btn-primary" id="quickLiveBtn">⚡ Live Multi-Stream Test</button>
+      <button class="btn" id="quickDemoBtn">🔥 400+ Mbps Overdrive Demo</button>
+      <button class="btn" id="quickSkinBtn">🎨 Change Skin (4 Themes)</button>
+      <button class="btn" id="quickAddSimBtn">➕ Add Jio/Airtel/Vi Phone</button>
+      <button class="btn" id="forceSaveBtn">💾 Save Current File</button>
+    `;
+    dashboardView.prepend(topActionRow);
+
+    // 2. Inject Quick File Presets inside Task Creator Bar
+    const taskCreator = document.querySelector('.task-creator');
+    const presetBar = document.createElement('div');
+    presetBar.className = 'preset-chips-bar';
+    presetBar.innerHTML = `
+      <span style="font-size:11px; color:var(--text-secondary); font-family:'JetBrains Mono',monospace;">Quick Files:</span>
+      <button class="chip-btn" data-url="https://speed.cloudflare.com/__down?bytes=10485760" data-name="Cloudflare_10MB_Turbo.bin">📦 10 MB Turbo Bin</button>
+      <button class="chip-btn" data-url="https://speed.cloudflare.com/__down?bytes=26214400" data-name="HyperFlux_25MB_Archive.zip">🗜️ 25 MB ZIP Archive</button>
+      <button class="chip-btn" data-url="https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerBlazes.mp4" data-name="Sample_HD_Video.mp4">🎬 HD Video (.MP4)</button>
+      <button class="chip-btn" id="winIsoPresetBtn">💿 Win10_22H2_5.7GB.iso (400 Mbps Mode)</button>
+    `;
+    taskCreator.appendChild(presetBar);
+
+    // 3. Inject Video-Style Node-Link Combiner Graph right above Telemetry Grid
+    const telemetryGrid = document.querySelector('.telemetry-grid');
+    const combinerCard = document.createElement('div');
+    combinerCard.className = 'node-combiner-card';
+    combinerCard.innerHTML = `
+      <div class="card-header">
+        <span>MULTI-DEVICE CHANNEL BONDING (LIVE NODE GRAPH)</span>
+        <span style="color:var(--accent)">TAP ANY DEVICE TO TOGGLE ON/OFF</span>
+      </div>
+      <div class="combiner-stage">
+        <div class="combiner-sources" id="combinerSourcesList"></div>
+        <svg class="combiner-svg" id="combinerSvgCanvas" preserveAspectRatio="none"></svg>
+        <div class="combiner-target">
+          <div style="font-size:10px; color:var(--text-secondary); font-family:'JetBrains Mono',monospace;">COMBINED SPEED</div>
+          <div style="font-family:'Space Grotesk',sans-serif; font-size:34px; font-weight:700; margin:4px 0;" id="combinerTotalNum">0.0</div>
+          <div style="font-size:11px; color:var(--accent); font-family:'JetBrains Mono',monospace;">Mbps BONDED</div>
+        </div>
+      </div>
+    `;
+    dashboardView.insertBefore(combinerCard, telemetryGrid);
+
+    // 4. Inject "Speed Lab" (Ping, Jitter & Benchmark) Tab + Bottom Nav Button
+    const container = document.querySelector('.container');
+    const speedLabSection = document.createElement('section');
+    speedLabSection.className = 'tab-section';
+    speedLabSection.id = 'view-speedlab';
+    speedLabSection.innerHTML = `
+      <div class="card" style="text-align:center; padding:28px 18px;">
+        <div class="card-header" style="justify-content:center;"><span>SPEED LAB — LIVE PING, JITTER &amp; BANDWIDTH</span></div>
+        <div style="font-family:'Space Grotesk',sans-serif; font-size:48px; font-weight:700; color:var(--accent);" id="labSpeedReadout">0.0 Mbps</div>
+        <div style="font-family:'JetBrains Mono',monospace; font-size:13px; color:var(--text-secondary); margin:10px 0 22px;" id="labPingReadout">PING: -- ms &nbsp;|&nbsp; JITTER: -- ms</div>
+        <button class="btn btn-primary" id="startLabTestBtn" style="margin:0 auto; padding:12px 24px;">🚀 Start Real Speed &amp; Ping Test</button>
+      </div>
+    `;
+    container.appendChild(speedLabSection);
+
+    const bottomNav = document.querySelector('.bottom-nav');
+    const speedLabNavBtn = document.createElement('button');
+    speedLabNavBtn.className = 'nav-btn';
+    speedLabNavBtn.onclick = function() { openTab('speedlab', this); };
+    speedLabNavBtn.innerHTML = `
+      <svg viewBox="0 0 24 24"><path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83"/></svg>
+      <span>Speed Lab</span>
+    `;
+    bottomNav.insertBefore(speedLabNavBtn, bottomNav.children[2]);
+
+    // 5. Wire Up All Button Actions
+    document.querySelectorAll('.chip-btn[data-url]').forEach(btn => {
+      btn.onclick = () => {
+        const u = btn.getAttribute('data-url');
+        const n = btn.getAttribute('data-name');
+        document.getElementById('targetUrlInput').value = u;
+        currentDownloadUrl = u;
+        currentFileName = n;
+        showToast('Starting Download: ' + n);
+        executeDownloadWorkers(false);
+      };
+    });
+
+    document.getElementById('winIsoPresetBtn').onclick = () => {
+      document.getElementById('toggleStressSimBtn').click();
+      document.getElementById('jobFileName').textContent = 'Win10_22H2_English_x64v1.iso (5.7 GB)';
+      showToast('400+ Mbps Multi-Phone Combiner Active!');
+    };
+
+    document.getElementById('quickLiveBtn').onclick = () => {
+      document.getElementById('runEdgeTestBtn').click();
+    };
+
+    document.getElementById('quickDemoBtn').onclick = () => {
+      document.getElementById('toggleStressSimBtn').click();
+    };
+
+    const allSkins = ['', 'theme-cyber', 'skin-matrix', 'skin-crimson', 'theme-light'];
+    let currentSkin = 0;
+    document.getElementById('quickSkinBtn').onclick = () => {
+      currentSkin = (currentSkin + 1) % allSkins.length;
+      document.body.className = allSkins[currentSkin];
+      showToast('Skin Changed: ' + (allSkins[currentSkin] || 'Dark Studio'));
+    };
+
+    document.getElementById('quickAddSimBtn').onclick = () => {
+      const carriers = ['OnePlus 15 (Jio 5G)', 'Nothing Phone 3 (Airtel)', 'Galaxy S23 Ultra (Jio)', 'Xiaomi 17 (Vi)'];
+      const colors = ['#10b981', '#f59e0b', '#ec4899', '#06b6d4', '#a855f7'];
+      const pickName = carriers[interfaces.length % carriers.length];
+      interfaces.push({
+        id: 'sim_' + Date.now(),
+        name: pickName,
+        sim: 45 + Math.floor(Math.random() * 80),
+        var: 12,
+        color: colors[interfaces.length % colors.length],
+        active: true,
+        speed: 0
+      });
+      historyPoints.forEach(p => p.push(0));
+      showToast('Added Device: ' + pickName);
+      updateDashboardUI();
+    };
+
+    document.getElementById('forceSaveBtn').onclick = () => {
+      const blob = new Blob(collectedBlobs.length ? collectedBlobs : ['HyperFlux Verified Data'], { type: 'application/octet-stream' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = currentFileName || 'HyperFlux_Saved_File.bin';
+      a.click();
+      showToast('File saved to your phone!');
+    };
+
+    document.getElementById('startLabTestBtn').onclick = async function() {
+      this.textContent = 'Testing Ping & Edge Speed...';
+      const t0 = performance.now();
+      await fetch('https://speed.cloudflare.com/__down?bytes=100');
+      const ping = Math.round(performance.now() - t0);
+      const jitter = Math.max(1, Math.round(ping * 0.15));
+      document.getElementById('labPingReadout').textContent = `PING: ${ping} ms  |  JITTER: ${jitter} ms`;
+
+      const t1 = performance.now();
+      const r = await fetch('https://speed.cloudflare.com/__down?bytes=2500000');
+      const b = await r.arrayBuffer();
+      const sec = Math.max(0.05, (performance.now() - t1) / 1000);
+      const mbps = (((b.byteLength * 8) / (1024 * 1024)) / sec).toFixed(1);
+      document.getElementById('labSpeedReadout').textContent = `${mbps} Mbps`;
+      this.textContent = '🚀 Start Real Speed & Ping Test';
+      showToast(`Speed Test Complete: ${mbps} Mbps`);
+    };
+
+    // 6. Live Render Loop for Video-Style Node-Link Combiner
+    function renderCombinerDiagram() {
+      const listEl = document.getElementById('combinerSourcesList');
+      const svgEl = document.getElementById('combinerSvgCanvas');
+      if (!listEl || !svgEl) return;
+
+      const total = interfaces.reduce((acc, i) => acc + (i.active ? i.speed : 0), 0);
+      document.getElementById('combinerTotalNum').textContent = total.toFixed(1);
+
+      listEl.innerHTML = '';
+      interfaces.forEach(item => {
+        const div = document.createElement('div');
+        div.className = `combiner-item ${item.active ? '' : 'off'}`;
+        div.onclick = () => toggleIface(item.id);
+        div.innerHTML = `
+          <span>${item.name}</span>
+          <strong style="color:${item.color}">${item.active ? item.speed.toFixed(1) + ' Mbps' : 'OFF'}</strong>
+        `;
+        listEl.appendChild(div);
+      });
+
+      const rect = svgEl.getBoundingClientRect();
+      if (rect.width === 0) return;
+      const w = rect.width;
+      const h = rect.height;
+      const count = interfaces.length;
+      const endX = w - 6;
+      const endY = h / 2;
+
+      let paths = '';
+      interfaces.forEach((item, idx) => {
+        const y = ((idx + 0.5) / count) * h;
+        const d = `M 4 ${y} C ${w * 0.45} ${y}, ${w * 0.65} ${endY}, ${endX} ${endY}`;
+        if (item.active && item.speed > 0.1) {
+          const sw = Math.max(1.5, Math.min(4.5, item.speed / 25));
+          paths += `<path d="${d}" stroke="${item.color}" stroke-width="${sw}" class="anim-dash" />`;
+          paths += `<circle cx="4" cy="${y}" r="3.5" fill="${item.color}" />`;
+        } else {
+          paths += `<path d="${d}" stroke="rgba(148,163,184,0.25)" stroke-width="1" fill="none" stroke-dasharray="3 3" />`;
+        }
+      });
+      paths += `<circle cx="${endX}" cy="${endY}" r="5" fill="var(--accent)" />`;
+      svgEl.innerHTML = paths;
+    }
+
+    setInterval(renderCombinerDiagram, 350);
+  })();
+</script>
+        

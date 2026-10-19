@@ -1,22 +1,16 @@
 {
-  "name": "Plexo Multi-Stream Downloader",
-  "short_name": "Plexo",
-  "description": "Combine network streams and download files at super-fast speeds.",
+  "name": "HyperFlux Pro — Speed Combiner",
+  "short_name": "HyperFlux",
+  "description": "Multi-Network Speed Combiner & Turbo Downloader",
   "start_url": "./index.html",
   "scope": "./",
   "display": "standalone",
-  "orientation": "any",
-  "background_color": "#f6f7f9",
-  "theme_color": "#181a1f",
+  "orientation": "portrait",
+  "background_color": "#070a12",
+  "theme_color": "#070a12",
   "icons": [
     {
-      "src": "https://placehold.co/192x192/181a1f/ffffff.png?text=Plexo",
-      "sizes": "192x192",
-      "type": "image/png",
-      "purpose": "any maskable"
-    },
-    {
-      "src": "https://placehold.co/512x512/181a1f/ffffff.png?text=Plexo",
+      "src": "https://cdn-icons-png.flaticon.com/512/3665/3665923.png",
       "sizes": "512x512",
       "type": "image/png",
       "purpose": "any maskable"
